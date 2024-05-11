@@ -296,7 +296,6 @@ GameObject:
   - component: {fileID: 246433205}
   - component: {fileID: 246433207}
   - component: {fileID: 246433208}
-  - component: {fileID: 246433209}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Untagged
@@ -313,7 +312,7 @@ Transform:
   m_GameObject: {fileID: 246433204}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.88, y: 3.1399999, z: 0}
+  m_LocalPosition: {x: 1.6, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -383,23 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e73cae6542ee344e39377d2038a880e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 246433209}
---- !u!114 &246433209
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 246433204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22622593bf33d403b86391a4a5a3027f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: Goblin
-  order: 1
-  health: 1
-  damage: 1
+  stats: {fileID: 11400000, guid: 6c8974e433156415a922cc1acf7d5d2e, type: 2}
 --- !u!1 &277585037
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,7 +394,6 @@ GameObject:
   - component: {fileID: 277585038}
   - component: {fileID: 277585040}
   - component: {fileID: 277585041}
-  - component: {fileID: 277585042}
   m_Layer: 0
   m_Name: Skeleton
   m_TagString: Untagged
@@ -428,7 +410,7 @@ Transform:
   m_GameObject: {fileID: 277585037}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.35, y: 1.19, z: 0}
+  m_LocalPosition: {x: 1, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -498,23 +480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e73cae6542ee344e39377d2038a880e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 277585042}
---- !u!114 &277585042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 277585037}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22622593bf33d403b86391a4a5a3027f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: Skeleton
-  order: 3
-  health: 1
-  damage: 1
+  stats: {fileID: 11400000, guid: dad77a2623d51467eb18ea3381ff097b, type: 2}
 --- !u!1 &283333155
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,7 +492,6 @@ GameObject:
   - component: {fileID: 283333156}
   - component: {fileID: 283333158}
   - component: {fileID: 283333159}
-  - component: {fileID: 283333160}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -613,23 +578,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68dbea18d29e443048c3e66883b5a635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 283333160}
---- !u!114 &283333160
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 283333155}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22622593bf33d403b86391a4a5a3027f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: Player
-  order: 2
   health: 2
   damage: 1
+  order: 2
+  characterName: PLAYER
 --- !u!1 &381490106
 GameObject:
   m_ObjectHideFlags: 0
@@ -2321,7 +2273,6 @@ GameObject:
   - component: {fileID: 1762010959}
   - component: {fileID: 1762010961}
   - component: {fileID: 1762010962}
-  - component: {fileID: 1762010963}
   m_Layer: 0
   m_Name: Minatour
   m_TagString: Untagged
@@ -2338,7 +2289,7 @@ Transform:
   m_GameObject: {fileID: 1762010958}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.67, y: -1.28, z: 0}
+  m_LocalPosition: {x: 1.6, y: -2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2408,23 +2359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e73cae6542ee344e39377d2038a880e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 1762010963}
---- !u!114 &1762010963
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762010958}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 22622593bf33d403b86391a4a5a3027f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterName: Minatour
-  order: 4
-  health: 2
-  damage: 2
+  stats: {fileID: 11400000, guid: 4d9c8c52855574d07a087f0f46a9eeb3, type: 2}
 --- !u!1 &1789108095
 GameObject:
   m_ObjectHideFlags: 0

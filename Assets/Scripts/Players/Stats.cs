@@ -1,11 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Stats : MonoBehaviour
+[CreateAssetMenu(fileName = "NewEnemyStats", menuName = "EnemyStats")]
+public class EnemyStats : ScriptableObject
 {
-    public string characterName;
-    public int order;
+    public string charName;
     public int health;
     public int damage;
+    public int order;
+    public Sprite sprite; // Karakterin görselini tutan sprite
 }

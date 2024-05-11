@@ -3,12 +3,15 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public Stats stats;
+    public int health;
+    public int damage;
+    public int order;
+    public string characterName; // Karakterin ismi
     private Queue<string> playerCommands = new Queue<string>();
 
     void Start()
     {
-        stats = GetComponent<Stats>();
+        // Başlangıç değerlerini ayarlayabilirsiniz
     }
 
     public void PerformAction(string action)
@@ -16,15 +19,15 @@ public class Player : MonoBehaviour
         switch (action)
         {
             case "Attack":
-                Debug.Log(stats.characterName + " is attacking");
+                Debug.Log(characterName + " is attacking with " + damage + " damage.");
                 // Saldırı işlemi
                 break;
             case "Block":
-                Debug.Log("Player is blocking.");
+                Debug.Log(characterName + " is blocking.");
                 // Blok işlemi
                 break;
             case "Dodge":
-                Debug.Log("Player is dodging.");
+                Debug.Log(characterName + " is dodging.");
                 // Kaçınma işlemi
                 break;
             default:
@@ -50,19 +53,19 @@ public class Player : MonoBehaviour
 
     public int GetOrder()
     {
-        return stats.order;
+        return order;
     }
 
     // Dinamik olarak statları güncellemek için metodlar ekleyin
     public void IncreaseHealth(int amount)
     {
-        stats.health += amount;
-        Debug.Log("Player health increased by " + amount + ". New health: " + stats.health);
+        health += amount;
+        Debug.Log(characterName + " health increased by " + amount + ". New health: " + health);
     }
 
     public void IncreaseDamage(int amount)
     {
-        stats.damage += amount;
-        Debug.Log("Player damage increased by " + amount + ". New damage: " + stats.damage);
+        damage += amount;
+        Debug.Log(characterName + " damage increased by " + amount + ". New damage: " + damage);
     }
 }
