@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
         {
             string command = playerCommands.Dequeue();
             PerformAction(command);
-            GameManager.Instance.RemoveFirstCommandFromList(); // Gerçekleşen aksiyonu listeden sil
+            //GameManager.Instance.RemoveFirstCommandFromList(); // Gerçekleşen aksiyonu listeden sil
         }
     }
 
@@ -93,6 +93,7 @@ public class Player : MonoBehaviour
         if (target != null)
         {
             target.TakeDamage(damage);
+            GameManager.Instance.RemoveFirstCommandFromList();
         }
         else
         {

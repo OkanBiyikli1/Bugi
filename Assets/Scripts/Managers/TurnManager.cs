@@ -91,7 +91,7 @@ public class TurnManager : MonoBehaviour
     // Sıradaki karakterlerin aksiyonlarını sırayla gerçekleştirir
     public IEnumerator ExecuteTurns()
     {
-        while (GameManager.Instance.GetItemList().Count > 0)
+        while (true)
         {
             var character = turnList[currentTurnIndex];
 
@@ -102,13 +102,6 @@ public class TurnManager : MonoBehaviour
 
             if (character is Enemy enemy)
             {
-                // Player'ın defensive durumlarını sıfırla
-                Player playerRef = FindObjectOfType<Player>();
-                if (playerRef != null)
-                {
-                    playerRef.ResetDefensiveStates();
-                }
-
                 // Player'ın defensive durumlarını true yap
                 if (GameManager.Instance.GetItemList().Count > 0)
                 {
@@ -120,7 +113,7 @@ public class TurnManager : MonoBehaviour
                 enemy.PerformAction();
             }
 
-            yield return new WaitForSeconds(1); // Bir aksiyondan sonra bekleme süresi
+            yield return new WaitForSeconds(3); // Bir aksiyondan sonra bekleme süresi
 
             // currentTurnIndex değerini bir sonraki karaktere geçecek şekilde artır
             currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
@@ -133,12 +126,12 @@ public class TurnManager : MonoBehaviour
                 {
                     playerRef.ResetDefensiveStates();
                 }
-            }
 
-            // Eğer liste tamamen işlendiyse ve sona ulaştıysa, currentTurnIndex sıfırlanmasın
-            if (currentTurnIndex == 0 && GameManager.Instance.GetItemList().Count == 0)
-            {
-                yield break; // Liste boşsa döngüyü durdur
+                // Eğer liste tamamen işlendiyse ve sona ulaştıysa, döngüyü durdur
+                if (GameManager.Instance.GetItemList().Count == 0)
+                {
+                    yield break; // Liste boşsa döngüyü durdur
+                }
             }
         }
     }
