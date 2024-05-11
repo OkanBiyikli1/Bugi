@@ -10,11 +10,6 @@ public class GameManager : MonoBehaviour
     public AutoScroll autoScroll;  // AutoScroll scripti referansı
 
     public Player player;
-    public Enemy goblin;
-    public Enemy skeleton;
-    public Enemy minotaur;
-    public TurnManager turnManager; // TurnManager referansı
-
     private Coroutine turnCoroutine;
 
     private void Awake()
@@ -60,7 +55,7 @@ public class GameManager : MonoBehaviour
             if (orderList.Count == 0 && turnCoroutine != null)
             {
                 StopCoroutine(turnCoroutine);
-                turnManager.ResetTurnIndex(); // Turn sırasını bir sonraki karakterden başlat
+                TurnManager.Instance.ResetTurnIndex(); // Turn sırasını bir sonraki karakterden başlat
                 //Debug.Log("No more commands. Stopping turns.");
             }
         }
@@ -76,18 +71,6 @@ public class GameManager : MonoBehaviour
         return orderList.Count > 0;
     }
 
-    void Start()
-    {
-        // Saldırı sırasını belirle
-        turnManager.AddCharacterToList(goblin);
-        turnManager.AddCharacterToList(player);
-        turnManager.AddCharacterToList(skeleton);
-        turnManager.AddCharacterToList(minotaur);
-
-        // Sıralama değerine göre karakterleri sırala
-        turnManager.SortCharactersByOrder();
-    }
-
     public void OnGenerateButtonClicked()
     {
         if (CanStartGeneration())
@@ -97,7 +80,7 @@ public class GameManager : MonoBehaviour
             {
                 StopCoroutine(turnCoroutine);
             }
-            turnCoroutine = StartCoroutine(turnManager.ExecuteTurns());
+            turnCoroutine = StartCoroutine(TurnManager.Instance.ExecuteTurns());
         }
         else
         {

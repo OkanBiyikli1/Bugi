@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22622593bf33d403b86391a4a5a3027f, type: 3}
-  m_Name: Minotaur
+  m_Name: 5-Spider
   m_EditorClassIdentifier: 
-  charName: Minotaur
-  health: 2
-  damage: 2
-  order: 4
+  charName: Spider
+  health: 1
+  damage: 1
+  order: 5
   sprite: {fileID: 0}

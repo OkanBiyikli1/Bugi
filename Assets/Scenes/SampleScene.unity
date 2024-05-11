@@ -2394,10 +2394,6 @@ MonoBehaviour:
   listContainer: {fileID: 696507772}
   autoScroll: {fileID: 1304286877}
   player: {fileID: 283333159}
-  goblin: {fileID: 246433208}
-  skeleton: {fileID: 277585041}
-  minotaur: {fileID: 1762010962}
-  turnManager: {fileID: 1789108098}
 --- !u!4 &1789108097
 Transform:
   m_ObjectHideFlags: 0
