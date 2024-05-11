@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     public int order;
     public string characterName; // Karakterin ismi
     private Queue<string> playerCommands = new Queue<string>();
+    public bool isBlocking;
+    public bool isDodging;
 
     void Start()
     {
@@ -19,16 +21,26 @@ public class Player : MonoBehaviour
         switch (action)
         {
             case "Attack":
-                Debug.Log(characterName + " is attacking with " + damage + " damage.");
-                // Saldırı işlemi
+                if (TurnManager.Instance.IsPlayerTurn())
+                {
+                    Debug.Log(characterName + " is attacking with " + damage + " damage.");
+                    // Saldırı işlemi
+                    Attack();
+                }
+                else
+                {
+                    Debug.Log("Cannot attack during enemy turn.");
+                }
                 break;
             case "Block":
                 Debug.Log(characterName + " is blocking.");
-                // Blok işlemi
+                isBlocking = true;
+                isDodging = false;
                 break;
             case "Dodge":
                 Debug.Log(characterName + " is dodging.");
-                // Kaçınma işlemi
+                isDodging = true;
+                isBlocking = false;
                 break;
             default:
                 Debug.Log("Unknown action: " + action);
@@ -56,16 +68,51 @@ public class Player : MonoBehaviour
         return order;
     }
 
-    // Dinamik olarak statları güncellemek için metodlar ekleyin
-    public void IncreaseHealth(int amount)
+    public void TakeDamage(int damage)
     {
-        health += amount;
-        Debug.Log(characterName + " health increased by " + amount + ". New health: " + health);
+        health -= damage;
+        Debug.Log(characterName + " took " + damage + " damage. Health now: " + health);
+        if (health <= 0)
+        {
+            Die();
+        }
     }
 
-    public void IncreaseDamage(int amount)
+    private void Die()
     {
-        damage += amount;
-        Debug.Log(characterName + " damage increased by " + amount + ". New damage: " + damage);
+        // Karakteri sahneden kaldır
+        Debug.Log(characterName + " has died.");
+        TurnManager.Instance.RemoveCharacterFromList(this);
+        // Oyuncunun ölmesiyle ilgili diğer işlemler
+    }
+
+    private void Attack()
+    {
+        // Hareket sırasının en başındaki düşmana saldır
+        Enemy target = TurnManager.Instance.GetFirstEnemy();
+        if (target != null)
+        {
+            target.TakeDamage(damage);
+        }
+        else
+        {
+            Debug.Log("No enemies to attack.");
+        }
+    }
+
+    public bool IsBlocking()
+    {
+        return isBlocking;
+    }
+
+    public bool IsDodging()
+    {
+        return isDodging;
+    }
+
+    public void ResetDefensiveStates()
+    {
+        isBlocking = false;
+        isDodging = false;
     }
 }

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: 4-Minotaur
   m_EditorClassIdentifier: 
   charName: Minotaur
-  health: 2
+  health: 4
   damage: 2
   order: 4
   sprite: {fileID: 0}
+  attackType: 0

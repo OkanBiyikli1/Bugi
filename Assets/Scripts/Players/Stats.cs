@@ -8,4 +8,5 @@ public class EnemyStats : ScriptableObject
     public int damage;
     public int order;
     public Sprite sprite; // Karakterin görselini tutan sprite
+    public AttackType attackType; // Saldırı türü (Smash veya Cutting)
 }

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: 1-Goblin
   m_EditorClassIdentifier: 
   charName: Goblin
-  health: 1
+  health: 4
   damage: 1
   order: 1
   sprite: {fileID: 0}
+  attackType: 1

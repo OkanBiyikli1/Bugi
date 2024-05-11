@@ -47,6 +47,23 @@ public class TurnManager : MonoBehaviour
         turnList.Add(character);
     }
 
+    // Karakterleri listeden çıkarır
+    public void RemoveCharacterFromList(MonoBehaviour character)
+    {
+        if (turnList.Contains(character))
+        {
+            int index = turnList.IndexOf(character);
+            turnList.Remove(character);
+
+            // Eğer çıkarılan karakter currentTurnIndex'e denk geliyorsa, indexi ayarla
+            if (index <= currentTurnIndex)
+            {
+                currentTurnIndex = Mathf.Max(currentTurnIndex - 1, 0);
+            }
+            SortCharactersByOrder();
+        }
+    }
+
     // Sıralama değerine göre karakterleri sıraya sokar
     public void SortCharactersByOrder()
     {
@@ -78,20 +95,45 @@ public class TurnManager : MonoBehaviour
         {
             var character = turnList[currentTurnIndex];
 
-            if (character is Enemy enemy)
+            if (character is Player player)
             {
-                enemy.PerformAction();
+                player.ExecutePlayerCommands();
             }
 
-            if (GameManager.Instance.GetItemList().Count > 0)
+            if (character is Enemy enemy)
             {
-                GameManager.Instance.player.ExecutePlayerCommands();
+                // Player'ın defensive durumlarını sıfırla
+                Player playerRef = FindObjectOfType<Player>();
+                if (playerRef != null)
+                {
+                    playerRef.ResetDefensiveStates();
+                }
+
+                // Player'ın defensive durumlarını true yap
+                if (GameManager.Instance.GetItemList().Count > 0)
+                {
+                    GameManager.Instance.player.ExecutePlayerCommands();
+                }
+
+                yield return new WaitForSeconds(1);
+
+                enemy.PerformAction();
             }
 
             yield return new WaitForSeconds(1); // Bir aksiyondan sonra bekleme süresi
 
             // currentTurnIndex değerini bir sonraki karaktere geçecek şekilde artır
             currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
+
+            // Tüm tur bitiminde player'ın defensive durumlarını sıfırla
+            if (currentTurnIndex == 0)
+            {
+                Player playerRef = FindObjectOfType<Player>();
+                if (playerRef != null)
+                {
+                    playerRef.ResetDefensiveStates();
+                }
+            }
 
             // Eğer liste tamamen işlendiyse ve sona ulaştıysa, currentTurnIndex sıfırlanmasın
             if (currentTurnIndex == 0 && GameManager.Instance.GetItemList().Count == 0)
@@ -105,5 +147,22 @@ public class TurnManager : MonoBehaviour
     {
         // Turn sırasını bir sonraki karakterden başlatmak için currentTurnIndex değerini artır
         currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
+    }
+
+    public bool IsPlayerTurn()
+    {
+        return turnList[currentTurnIndex] is Player;
+    }
+
+    public Enemy GetFirstEnemy()
+    {
+        foreach (var character in turnList)
+        {
+            if (character is Enemy enemy)
+            {
+                return enemy;
+            }
+        }
+        return null;
     }
 }
