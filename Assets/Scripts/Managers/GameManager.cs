@@ -81,6 +81,7 @@ public class GameManager : MonoBehaviour
                 StopCoroutine(turnCoroutine);
             }
             turnCoroutine = StartCoroutine(TurnManager.Instance.ExecuteTurns());
+            TurnManager.Instance.DeactivateAllIcons();
         }
         else
         {

@@ -18,15 +18,17 @@ public class TurnManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
-        // Tüm düşmanları ve player'ı sıraya ekle
+    void Start()
+    {
         AddAllCharactersToList();
         SortCharactersByOrder();
+        ActivateIconForCurrent(); // Oyun başladığında aktif karakterin ikonunu aktifleştir
     }
 
     private void AddAllCharactersToList()
     {
-        // Scene içerisindeki tüm Enemy ve Player bileşenlerini bul ve listeye ekle
         Enemy[] enemies = FindObjectsOfType<Enemy>();
         Player player = FindObjectOfType<Player>();
 
@@ -41,21 +43,17 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    // Karakterleri sıraya ekler
     public void AddCharacterToList(MonoBehaviour character)
     {
         turnList.Add(character);
     }
 
-    // Karakterleri listeden çıkarır
     public void RemoveCharacterFromList(MonoBehaviour character)
     {
         if (turnList.Contains(character))
         {
             int index = turnList.IndexOf(character);
             turnList.Remove(character);
-
-            // Eğer çıkarılan karakter currentTurnIndex'e denk geliyorsa, indexi ayarla
             if (index <= currentTurnIndex)
             {
                 currentTurnIndex = Mathf.Max(currentTurnIndex - 1, 0);
@@ -64,7 +62,6 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    // Sıralama değerine göre karakterleri sıraya sokar
     public void SortCharactersByOrder()
     {
         turnList.Sort((x, y) =>
@@ -73,6 +70,7 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
+        ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -85,10 +83,9 @@ public class TurnManager : MonoBehaviour
         {
             return enemy.GetOrder();
         }
-        return int.MaxValue; // Varsayılan en büyük değer
+        return int.MaxValue;
     }
 
-    // Sıradaki karakterlerin aksiyonlarını sırayla gerçekleştirir
     public IEnumerator ExecuteTurns()
     {
         while (true)
@@ -102,7 +99,6 @@ public class TurnManager : MonoBehaviour
 
             if (character is Enemy enemy)
             {
-                // Player'ın defensive durumlarını true yap
                 if (GameManager.Instance.GetItemList().Count > 0)
                 {
                     GameManager.Instance.player.ExecutePlayerCommands();
@@ -113,12 +109,9 @@ public class TurnManager : MonoBehaviour
                 enemy.PerformAction();
             }
 
-            yield return new WaitForSeconds(3); // Bir aksiyondan sonra bekleme süresi
-
-            // currentTurnIndex değerini bir sonraki karaktere geçecek şekilde artır
+            yield return new WaitForSeconds(3);
             currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
 
-            // Tüm tur bitiminde player'ın defensive durumlarını sıfırla
             if (currentTurnIndex == 0)
             {
                 Player playerRef = FindObjectOfType<Player>();
@@ -127,19 +120,34 @@ public class TurnManager : MonoBehaviour
                     playerRef.ResetDefensiveStates();
                 }
 
-                // Eğer liste tamamen işlendiyse ve sona ulaştıysa, döngüyü durdur
                 if (GameManager.Instance.GetItemList().Count == 0)
                 {
+                    DeactivateAllIcons(); // Tüm ikonları deaktifleştir
                     yield break; // Liste boşsa döngüyü durdur
                 }
             }
         }
     }
 
+    private void ActivateIconForCurrent()
+    {
+        DeactivateAllIcons();
+        GameObject currentCharacter = turnList[currentTurnIndex].gameObject;
+        currentCharacter.transform.Find("TurnIcon").gameObject.SetActive(true);
+    }
+
+    public void DeactivateAllIcons()
+    {
+        foreach (var character in turnList)
+        {
+            character.gameObject.transform.Find("TurnIcon").gameObject.SetActive(false);
+        }
+    }
+
     public void ResetTurnIndex()
     {
-        // Turn sırasını bir sonraki karakterden başlatmak için currentTurnIndex değerini artır
         currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
+        ActivateIconForCurrent(); // Turn index sıfırlandığında yeni aktif karakterin ikonunu aktifleştir
     }
 
     public bool IsPlayerTurn()
