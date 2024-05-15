@@ -5,7 +5,7 @@ using UnityEngine;
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance;
-    private List<MonoBehaviour> turnList = new List<MonoBehaviour>();
+    public List<MonoBehaviour> turnList = new List<MonoBehaviour>();
     private int currentTurnIndex = 0; // Sıradaki karakterin indeksini takip eder
 
     private void Awake()
@@ -22,9 +22,16 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
+        StartCoroutine(InitializeAfterDelay(2f)); // Start the coroutine with a 2-second delay
+    }
+
+    IEnumerator InitializeAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay); // Wait for the specified delay
+
         AddAllCharactersToList();
         SortCharactersByOrder();
-        ActivateIconForCurrent(); // Oyun başladığında aktif karakterin ikonunu aktifleştir
+        ActivateIconForCurrent(); // Execute after delay
     }
 
     private void AddAllCharactersToList()
