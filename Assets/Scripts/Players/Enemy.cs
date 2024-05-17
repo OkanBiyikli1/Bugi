@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log(player.characterName + " dodged the attack.");
+                        Debug.Log(player + " dodged the attack.");
                     }
                     break;
                 case AttackType.Cutting:
@@ -71,7 +71,7 @@ public class Enemy : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log(player.characterName + " blocked the attack.");
+                        Debug.Log(player + " blocked the attack.");
                     }
                     break;
             }

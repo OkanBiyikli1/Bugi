@@ -1,19 +1,36 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    public int health;
-    public int damage;
-    public int order;
-    public string characterName; // Karakterin ismi
+    [SerializeField] private int maxHealth;
+    [SerializeField] private int currentHealth;
+    [SerializeField] private int damage;
+    [SerializeField] private int order;
+    [SerializeField] private string characterName; // Karakterin ismi
     private Queue<string> playerCommands = new Queue<string>();
-    public bool isBlocking;
-    public bool isDodging;
+    private bool isBlocking;
+    private bool isDodging;
+
+    [SerializeField] private Image[] hearts;
 
     void Start()
     {
-        // Başlangıç değerlerini ayarlayabilirsiniz
+        currentHealth = maxHealth;
+        UpdateHeartsUI();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            TakeDamage(2);
+        }
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            Heal(2);
+        }
     }
 
     public void PerformAction(string action)
@@ -24,7 +41,6 @@ public class Player : MonoBehaviour
                 if (TurnManager.Instance.IsPlayerTurn())
                 {
                     Debug.Log(characterName + " is attacking with " + damage + " damage.");
-                    // Saldırı işlemi
                     Attack();
                 }
                 else
@@ -54,7 +70,6 @@ public class Player : MonoBehaviour
         {
             string command = playerCommands.Dequeue();
             PerformAction(command);
-            //GameManager.Instance.RemoveFirstCommandFromList(); // Gerçekleşen aksiyonu listeden sil
         }
     }
 
@@ -70,9 +85,11 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        Debug.Log(characterName + " took " + damage + " damage. Health now: " + health);
-        if (health <= 0)
+        currentHealth -= damage;
+        if (currentHealth < 0) currentHealth = 0;
+        Debug.Log(characterName + " took " + damage + " damage. Health now: " + currentHealth);
+        UpdateHeartsUI();
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -80,15 +97,12 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
-        // Karakteri sahneden kaldır
         Debug.Log(characterName + " has died.");
         TurnManager.Instance.RemoveCharacterFromList(this);
-        // Oyuncunun ölmesiyle ilgili diğer işlemler
     }
 
     private void Attack()
     {
-        // Hareket sırasının en başındaki düşmana saldır
         Enemy target = TurnManager.Instance.GetFirstEnemy();
         if (target != null)
         {
@@ -115,5 +129,28 @@ public class Player : MonoBehaviour
     {
         isBlocking = false;
         isDodging = false;
+    }
+
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        Debug.Log(characterName + " healed by " + amount + ". Health now: " + currentHealth);
+        UpdateHeartsUI();
+    }
+
+    public void UpdateHeartsUI()
+    {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            if (i < currentHealth)
+            {
+                hearts[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                hearts[i].gameObject.SetActive(false);
+            }
+        }
     }
 }
