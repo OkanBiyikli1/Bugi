@@ -68,7 +68,7 @@ public class GameManager : MonoBehaviour
 
     public bool CanStartGeneration()
     {
-        return orderList.Count > 0;
+        return orderList.Count > 0;//BURASI BELKİ İLERDE 1 OLARAK AYARLANABİLİR
     }
 
     public void OnGenerateButtonClicked()
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("Order list is empty. Cannot start generation.");
+            Debug.Log("1'den fazla koymalisiniz.");
         }
     }
 }
