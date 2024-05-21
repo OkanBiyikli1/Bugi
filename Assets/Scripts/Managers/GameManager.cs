@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 
     public void RemoveFromList(GameObject item)
     {
-        if (orderList.Contains(item))
+        if (orderList != null && orderList.Contains(item))
         {
             orderList.Remove(item);
             //Debug.Log("Item removed: " + item.name);

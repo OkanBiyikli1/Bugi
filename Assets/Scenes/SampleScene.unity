@@ -3057,6 +3057,7 @@ GameObject:
   - component: {fileID: 1789108096}
   - component: {fileID: 1789108098}
   - component: {fileID: 1789108099}
+  - component: {fileID: 1789108100}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3120,10 +3121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf764a5870f1430eb0a15fcfe733089, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevelIndex: 1
+  currentLevelIndex: 0
   levels:
-  - {fileID: 11400000, guid: ef8751c3de8ce479f84441027c2c488f, type: 2}
   - {fileID: 11400000, guid: 1d65001ef831b4240a5a25b5d0d53291, type: 2}
+  - {fileID: 11400000, guid: ef8751c3de8ce479f84441027c2c488f, type: 2}
   - {fileID: 11400000, guid: 777b0339990e6420a93c232862ca42ec, type: 2}
   - {fileID: 11400000, guid: d57b9ef1d84f64a208abe90305800c49, type: 2}
   - {fileID: 11400000, guid: 447130f1f1ba8400698a6eb6bcba4e0f, type: 2}
@@ -3134,6 +3135,19 @@ MonoBehaviour:
   - {fileID: 152740565}
   - {fileID: 539306183}
   - {fileID: 1892472994}
+--- !u!114 &1789108100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789108095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35eeabdd33fb54df4b97fb9a6bc3bcea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemies: []
 --- !u!1 &1892472993
 GameObject:
   m_ObjectHideFlags: 0

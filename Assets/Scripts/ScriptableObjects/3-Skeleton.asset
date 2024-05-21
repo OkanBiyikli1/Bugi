@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 3-Skeleton
   m_EditorClassIdentifier: 
   charName: Skeleton
-  health: 4
+  health: 2
   damage: 1
   order: 3
   sprite: {fileID: 0}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour
 {
@@ -10,14 +11,18 @@ public class Enemy : MonoBehaviour
         if (stats != null)
         {
             currentHealth = stats.health;
-            // Görseli ayarlamak için sprite renderer veya UI image kullanabilirsiniz
-            // GetComponent<SpriteRenderer>().sprite = stats.sprite;
+            StartCoroutine(AddEnemyWithDelay(1f)); // 1 saniye gecikme ile enemy ekleme
         }
+    }
+
+    private IEnumerator AddEnemyWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        EnemyManager.Instance.AddEnemy(this);
     }
 
     public void PerformAction()
     {
-        // Düşmanın saldırı işlemleri
         Debug.Log(stats.charName + " is attacking with " + stats.damage + " damage.");
         Attack();
     }
@@ -39,9 +44,9 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
-        // Karakteri sahneden kaldır
         Debug.Log(stats.charName + " has died.");
         TurnManager.Instance.RemoveCharacterFromList(this);
+        EnemyManager.Instance.RemoveEnemy(this);
         Destroy(gameObject);
     }
 
@@ -53,7 +58,6 @@ public class Enemy : MonoBehaviour
             switch (stats.attackType)
             {
                 case AttackType.Smash:
-                    // Minotaur saldırısı, dodge yapılmazsa canı azaltır
                     if (!player.IsDodging())
                     {
                         player.TakeDamage(stats.damage);
@@ -64,7 +68,6 @@ public class Enemy : MonoBehaviour
                     }
                     break;
                 case AttackType.Cutting:
-                    // Diğer yaratıkların saldırısı, block yapılmazsa canı azaltır
                     if (!player.IsBlocking())
                     {
                         player.TakeDamage(stats.damage);
@@ -75,7 +78,6 @@ public class Enemy : MonoBehaviour
                     }
                     break;
             }
-            
             GameManager.Instance.RemoveFirstCommandFromList();
         }
     }
