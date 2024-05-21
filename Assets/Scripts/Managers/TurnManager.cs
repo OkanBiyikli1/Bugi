@@ -31,7 +31,7 @@ public class TurnManager : MonoBehaviour
 
         AddAllCharactersToList();
         SortCharactersByOrder();
-        ActivateIconForCurrent();
+        ActivateIconForCurrent(); // Execute after delay
     }
 
     private void AddAllCharactersToList()
@@ -77,7 +77,7 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
-        //ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
+        ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
     }
 
     private int GetOrder(MonoBehaviour character)

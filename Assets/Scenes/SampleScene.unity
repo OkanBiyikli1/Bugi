@@ -486,6 +486,8 @@ MonoBehaviour:
   damage: 2
   order: 2
   characterName: PLAYER
+  isBlocking: 0
+  isDodging: 0
   hearts:
   - {fileID: 347627559}
   - {fileID: 728287354}
