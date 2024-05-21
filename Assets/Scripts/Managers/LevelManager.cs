@@ -1,40 +1,15 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour
 {
-    public static LevelManager Instance;
     public int currentLevelIndex = 0; // Mevcut level indexi
     public List<LevelData> levels; // Tüm level'lar
     public List<Transform> positions; // Düşmanların yerleştirileceği pozisyonlar
 
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
-
     void Start()
     {
-        Initialize();
-    }
-
-    public void Initialize()
-    {
-        StartCoroutine(StartLevelWithDelay(currentLevelIndex, .1f));
-    }
-
-    private IEnumerator StartLevelWithDelay(int levelIndex, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        StartLevel(levelIndex);
+        StartLevel(currentLevelIndex);
     }
 
     public void StartLevel(int levelIndex)
@@ -47,21 +22,11 @@ public class LevelManager : MonoBehaviour
                 Instantiate(levelData.enemies[i], positions[i].position, Quaternion.identity, positions[i]);
             }
         }
-
-        // Initialize managers with a slight delay
-        StartCoroutine(InitializeManagersAfterDelay(1f));
-    }
-
-    private IEnumerator InitializeManagersAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        EnemyManager.Instance.Initialize();
-        TurnManager.Instance.Initialize();
     }
 
     public void RestartLevel()
     {
-        Initialize();
+        StartLevel(currentLevelIndex);
     }
 
     public void NextLevel()
@@ -69,13 +34,7 @@ public class LevelManager : MonoBehaviour
         if (currentLevelIndex + 1 < levels.Count)
         {
             currentLevelIndex++;
-            Initialize();
+            StartLevel(currentLevelIndex);
         }
-    }
-
-    public void OnAllEnemiesDefeated()
-    {
-        Debug.Log("All enemies defeated. Proceeding to next level.");
-        NextLevel();
     }
 }

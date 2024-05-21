@@ -6,7 +6,7 @@ public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance;
     public List<MonoBehaviour> turnList = new List<MonoBehaviour>();
-    private int currentTurnIndex = 0;
+    private int currentTurnIndex = 0; // Sıradaki karakterin indeksini takip eder
 
     private void Awake()
     {
@@ -22,22 +22,16 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
-        //StartCoroutine(InitializeAfterDelay(2f));
-    }
-
-    public void Initialize()
-    {
-        turnList.Clear();
-        currentTurnIndex = 0;
-        AddAllCharactersToList();
-        SortCharactersByOrder();
-        ActivateIconForCurrent();
+        StartCoroutine(InitializeAfterDelay(2f)); // Start the coroutine with a 2-second delay
     }
 
     IEnumerator InitializeAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
-        Initialize();
+        yield return new WaitForSeconds(delay); // Wait for the specified delay
+
+        AddAllCharactersToList();
+        SortCharactersByOrder();
+        ActivateIconForCurrent();
     }
 
     private void AddAllCharactersToList()
@@ -83,6 +77,7 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
+        //ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -134,8 +129,8 @@ public class TurnManager : MonoBehaviour
 
                 if (GameManager.Instance.GetItemList().Count == 0)
                 {
-                    DeactivateAllIcons();
-                    yield break;
+                    DeactivateAllIcons(); // Tüm ikonları deaktifleştir
+                    yield break; // Liste boşsa döngüyü durdur
                 }
             }
         }
@@ -159,7 +154,7 @@ public class TurnManager : MonoBehaviour
     public void ResetTurnIndex()
     {
         currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
-        ActivateIconForCurrent();
+        ActivateIconForCurrent(); // Turn index sıfırlandığında yeni aktif karakterin ikonunu aktifleştir
     }
 
     public bool IsPlayerTurn()
