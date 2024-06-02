@@ -76,7 +76,7 @@ public class Enemy : MonoBehaviour
                     break;
             }
             
-            GameManager.Instance.RemoveFirstCommandFromList();
+            //GameManager.Instance.RemoveFirstCommandFromList();
         }
     }
 }

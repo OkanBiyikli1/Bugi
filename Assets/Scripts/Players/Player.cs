@@ -38,15 +38,8 @@ public class Player : MonoBehaviour
         switch (action)
         {
             case "Attack":
-                if (TurnManager.Instance.IsPlayerTurn())
-                {
-                    Debug.Log(characterName + " is attacking with " + damage + " damage.");
-                    Attack();
-                }
-                else
-                {
-                    Debug.Log("Cannot attack during enemy turn.");
-                }
+                Debug.Log(characterName + " is attacking with " + damage + " damage.");
+                Attack();
                 break;
             case "Block":
                 Debug.Log(characterName + " is blocking.");
@@ -103,15 +96,19 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        Enemy target = TurnManager.Instance.GetFirstEnemy();
-        if (target != null)
+        if(TurnManager.Instance.IsPlayerTurn())
         {
-            target.TakeDamage(damage);
-            GameManager.Instance.RemoveFirstCommandFromList();
-        }
-        else
-        {
-            Debug.Log("No enemies to attack.");
+            Enemy target = TurnManager.Instance.GetFirstEnemy();
+            if (target != null)
+            {
+                target.TakeDamage(damage);
+                //GameManager.Instance.RemoveFirstCommandFromList();
+            }
+            else
+            {
+                Debug.Log("No enemies to attack.");
+            }
+
         }
     }
 

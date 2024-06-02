@@ -98,6 +98,13 @@ public class TurnManager : MonoBehaviour
     {
         while (true)
         {
+            if (GameManager.Instance.GetItemList().Count == 0)
+            {
+                ActivateIconForCurrent(); // Tüm ikonları aktifleştir
+                Debug.Log("Durdurdum");
+                yield break; // Liste boşsa döngüyü durdur
+            }
+
             var character = turnList[currentTurnIndex];
 
             if (character is Player player)
@@ -117,7 +124,10 @@ public class TurnManager : MonoBehaviour
                 enemy.PerformAction();
             }
 
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
+
+            Player playerRef = FindObjectOfType<Player>();
+            playerRef.ResetDefensiveStates();
 
             currentTurnIndex++;
             if(currentTurnIndex >= turnList.Count)
@@ -125,15 +135,7 @@ public class TurnManager : MonoBehaviour
                 currentTurnIndex = 0;
             }
 
-            Player playerRef = FindObjectOfType<Player>();
-            playerRef.ResetDefensiveStates();
-
-            if (GameManager.Instance.GetItemList().Count == 0)
-            {
-                ActivateIconForCurrent(); // Tüm ikonları aktifleştir
-                Debug.Log("Durdurdum");
-                yield break; // Liste boşsa döngüyü durdur
-            }
+            GameManager.Instance.RemoveFirstCommandFromList();
 
             /*if (currentTurnIndex == 0)
             {
@@ -158,7 +160,7 @@ public class TurnManager : MonoBehaviour
         GameObject currentCharacter = turnList[currentTurnIndex].gameObject;
         Transform turnIconParent = currentCharacter.transform.Find("TurnIconParent");
         turnIconParent.GetChild(0).gameObject.SetActive(true);
-        Debug.Log("Ikonlar aktif");
+        //Debug.Log("Ikonlar aktif");
     }
 
     public void DeactivateAllIcons()
@@ -167,7 +169,7 @@ public class TurnManager : MonoBehaviour
         {
             Transform turnIconParent = character.gameObject.transform.Find("TurnIconParent");
             turnIconParent.GetChild(0).gameObject.SetActive(false);
-            Debug.Log("Ikonlar aktif degil");
+            //Debug.Log("Ikonlar aktif degil");
         }
     }
 
