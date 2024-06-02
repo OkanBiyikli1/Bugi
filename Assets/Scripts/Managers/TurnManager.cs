@@ -6,7 +6,7 @@ public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance;
     public List<MonoBehaviour> turnList = new List<MonoBehaviour>();
-    private int currentTurnIndex = 0; // Sıradaki karakterin indeksini takip eder
+    [SerializeField] private int currentTurnIndex = 1; // Sıradaki karakterin indeksini takip eder
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(InitializeAfterDelay(2f)); // Start the coroutine with a 2-second delay
+        StartCoroutine(InitializeAfterDelay(1f)); // Start the coroutine with a 2-second delay
     }
 
     IEnumerator InitializeAfterDelay(float delay)
@@ -48,6 +48,7 @@ public class TurnManager : MonoBehaviour
         {
             AddCharacterToList(player);
         }
+        DeactivateAllIcons();
     }
 
     public void AddCharacterToList(MonoBehaviour character)
@@ -77,7 +78,7 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
-        ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
+        //ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -117,9 +118,24 @@ public class TurnManager : MonoBehaviour
             }
 
             yield return new WaitForSeconds(3);
-            currentTurnIndex = (currentTurnIndex + 1) % turnList.Count;
 
-            if (currentTurnIndex == 0)
+            currentTurnIndex++;
+            if(currentTurnIndex >= turnList.Count)
+            {
+                currentTurnIndex = 0;
+            }
+
+            Player playerRef = FindObjectOfType<Player>();
+            playerRef.ResetDefensiveStates();
+
+            if (GameManager.Instance.GetItemList().Count == 0)
+            {
+                ActivateIconForCurrent(); // Tüm ikonları aktifleştir
+                Debug.Log("Durdurdum");
+                yield break; // Liste boşsa döngüyü durdur
+            }
+
+            /*if (currentTurnIndex == 0)
             {
                 Player playerRef = FindObjectOfType<Player>();
                 if (playerRef != null)
@@ -129,25 +145,29 @@ public class TurnManager : MonoBehaviour
 
                 if (GameManager.Instance.GetItemList().Count == 0)
                 {
-                    DeactivateAllIcons(); // Tüm ikonları deaktifleştir
+                    ActivateIconForCurrent(); // Tüm ikonları aktifleştir
                     yield break; // Liste boşsa döngüyü durdur
                 }
-            }
+            }*/
         }
     }
 
     private void ActivateIconForCurrent()
     {
-        DeactivateAllIcons();
+        //DeactivateAllIcons();
         GameObject currentCharacter = turnList[currentTurnIndex].gameObject;
-        currentCharacter.transform.Find("TurnIcon").gameObject.SetActive(true);
+        Transform turnIconParent = currentCharacter.transform.Find("TurnIconParent");
+        turnIconParent.GetChild(0).gameObject.SetActive(true);
+        Debug.Log("Ikonlar aktif");
     }
 
     public void DeactivateAllIcons()
     {
         foreach (var character in turnList)
         {
-            character.gameObject.transform.Find("TurnIcon").gameObject.SetActive(false);
+            Transform turnIconParent = character.gameObject.transform.Find("TurnIconParent");
+            turnIconParent.GetChild(0).gameObject.SetActive(false);
+            Debug.Log("Ikonlar aktif degil");
         }
     }
 

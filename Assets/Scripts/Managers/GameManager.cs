@@ -10,7 +10,6 @@ public class GameManager : MonoBehaviour
     public AutoScroll autoScroll;  // AutoScroll scripti referansı
 
     public Player player;
-    private Coroutine turnCoroutine;
 
     private void Awake()
     {
@@ -52,12 +51,12 @@ public class GameManager : MonoBehaviour
             Destroy(firstItem);
             //Debug.Log("First item removed");
 
-            if (orderList.Count == 0 && turnCoroutine != null)
+            /*if (orderList.Count == 0 && turnCoroutine != null)
             {
                 StopCoroutine(turnCoroutine);
                 TurnManager.Instance.ResetTurnIndex(); // Turn sırasını bir sonraki karakterden başlat
                 //Debug.Log("No more commands. Stopping turns.");
-            }
+            }*/
         }
     }
 
@@ -66,21 +65,16 @@ public class GameManager : MonoBehaviour
         return orderList;
     }
 
-    public bool CanStartGeneration()
+    /*public bool CanStartGeneration()
     {
         return orderList.Count > 0;
-    }
+    }*/
 
     public void OnGenerateButtonClicked()
     {
-        if (CanStartGeneration())
+        if (orderList.Count > 0)
         {
-            // Komutları işleme başla
-            if (turnCoroutine != null)
-            {
-                StopCoroutine(turnCoroutine);
-            }
-            turnCoroutine = StartCoroutine(TurnManager.Instance.ExecuteTurns());
+            StartCoroutine(TurnManager.Instance.ExecuteTurns());
             TurnManager.Instance.DeactivateAllIcons();
         }
         else
