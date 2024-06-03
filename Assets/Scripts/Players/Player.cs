@@ -104,11 +104,9 @@ public class Player : MonoBehaviour
                 target.TakeDamage(damage);
                 //GameManager.Instance.RemoveFirstCommandFromList();
             }
-            else
-            {
-                Debug.Log("No enemies to attack.");
-            }
-
+        }else
+        {
+            Debug.Log("kankam sırayı kacırdın bence");
         }
     }
 
