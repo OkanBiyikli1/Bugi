@@ -96,17 +96,20 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if(TurnManager.Instance.IsPlayerTurn())
+        if (TurnManager.Instance.IsPlayerTurn())
         {
             Enemy target = TurnManager.Instance.GetFirstEnemy();
             if (target != null)
             {
+                /*TurnManager.Instance.StartCoroutine(TurnManager.Instance.AnimateAndPerformAction(transform, target.transform, () => {
+                    target.TakeDamage(damage);
+                }));*/
                 target.TakeDamage(damage);
-                //GameManager.Instance.RemoveFirstCommandFromList();
             }
-        }else
+        }
+        else
         {
-            Debug.Log("kankam sırayı kacırdın bence");
+            Debug.Log("Sırayı kaçırdın");
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening; // DoTween kütüphanesini ekliyoruz
 
 public class TurnManager : MonoBehaviour
 {
@@ -100,31 +101,36 @@ public class TurnManager : MonoBehaviour
         {
             if (GameManager.Instance.GetItemList().Count == 0)
             {
-                ActivateIconForCurrent(); // Tüm ikonları aktifleştir
+                ActivateIconForCurrent();
                 Debug.Log("Durdurdum");
-                yield break; // Liste boşsa döngüyü durdur
+                yield break;
             }
 
             var character = turnList[currentTurnIndex];
 
             if (character is Player player)
             {
-                player.ExecutePlayerCommands();
+                Enemy target = GetFirstEnemy();
+                if (target != null)
+                {
+                    yield return StartCoroutine(AnimateAndPerformAction(player.transform, target.transform, () => player.ExecutePlayerCommands()));
+                }
             }
 
             if (character is Enemy enemy)
             {
-                if (GameManager.Instance.GetItemList().Count > 0)
+                Player target = FindObjectOfType<Player>();
+                if (target != null)
                 {
-                    GameManager.Instance.player.ExecutePlayerCommands();
+                    yield return StartCoroutine(AnimateAndPerformAction(enemy.transform, target.transform, () => {
+                        if (GameManager.Instance.GetItemList().Count > 0)
+                        {
+                            GameManager.Instance.player.ExecutePlayerCommands();
+                        }
+                        enemy.PerformAction();
+                    }));
                 }
-
-                yield return new WaitForSeconds(1);
-
-                enemy.PerformAction();
             }
-
-            yield return new WaitForSeconds(1);
 
             Player playerRef = FindObjectOfType<Player>();
             playerRef.ResetDefensiveStates();
@@ -136,22 +142,26 @@ public class TurnManager : MonoBehaviour
             }
 
             GameManager.Instance.RemoveFirstCommandFromList();
-
-            /*if (currentTurnIndex == 0)
-            {
-                Player playerRef = FindObjectOfType<Player>();
-                if (playerRef != null)
-                {
-                    playerRef.ResetDefensiveStates();
-                }
-
-                if (GameManager.Instance.GetItemList().Count == 0)
-                {
-                    ActivateIconForCurrent(); // Tüm ikonları aktifleştir
-                    yield break; // Liste boşsa döngüyü durdur
-                }
-            }*/
         }
+    }
+
+    private IEnumerator AnimateAndPerformAction(Transform attacker, Transform target, System.Action action)
+    {
+        Vector3 originalScaleAttacker = attacker.localScale;
+        Vector3 originalScaleTarget = target.localScale;
+        
+        // Saldırı yapan ve hedef karakterin ölçeğini büyütme
+        attacker.DOScale(originalScaleAttacker * 2, 0.5f);
+        target.DOScale(originalScaleTarget * 2, 0.5f);
+        yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
+
+        action.Invoke(); // Aksiyonu gerçekleştirme
+        yield return new WaitForSeconds(1f); // Aksiyonun bitmesini bekleme
+
+        // Saldırı yapan ve hedef karakterin ölçeğini normale döndürme
+        attacker.DOScale(originalScaleAttacker, 0.5f);
+        target.DOScale(originalScaleTarget, 0.5f);
+        yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
     }
 
     private void ActivateIconForCurrent()

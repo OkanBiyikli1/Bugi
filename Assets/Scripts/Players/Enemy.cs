@@ -50,10 +50,10 @@ public class Enemy : MonoBehaviour
         Player player = FindObjectOfType<Player>();
         if (player != null)
         {
+            //TurnManager.Instance.StartCoroutine(TurnManager.Instance.AnimateAndPerformAction(transform, player.transform, () => {
             switch (stats.attackType)
             {
                 case AttackType.Smash:
-                    // Minotaur saldırısı, dodge yapılmazsa canı azaltır
                     if (!player.IsDodging())
                     {
                         player.TakeDamage(stats.damage);
@@ -64,7 +64,6 @@ public class Enemy : MonoBehaviour
                     }
                     break;
                 case AttackType.Cutting:
-                    // Diğer yaratıkların saldırısı, block yapılmazsa canı azaltır
                     if (!player.IsBlocking())
                     {
                         player.TakeDamage(stats.damage);
@@ -75,8 +74,6 @@ public class Enemy : MonoBehaviour
                     }
                     break;
             }
-            
-            //GameManager.Instance.RemoveFirstCommandFromList();
         }
     }
 }
