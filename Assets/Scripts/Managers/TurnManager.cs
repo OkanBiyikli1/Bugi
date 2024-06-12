@@ -8,6 +8,8 @@ public class TurnManager : MonoBehaviour
     public static TurnManager Instance;
     public List<MonoBehaviour> turnList = new List<MonoBehaviour>();
     [SerializeField] private int currentTurnIndex = 1; // Sıradaki karakterin indeksini takip eder
+    [SerializeField] private GameObject bg; // Background GameObject'i
+    [SerializeField] private Canvas canvas; // Oyun canvas'ı
 
     private void Awake()
     {
@@ -108,12 +110,22 @@ public class TurnManager : MonoBehaviour
 
             var character = turnList[currentTurnIndex];
 
+            if (character == null)
+            {
+                currentTurnIndex++;
+                if (currentTurnIndex >= turnList.Count)
+                {
+                    currentTurnIndex = 0;
+                }
+                continue;
+            }
+
             if (character is Player player)
             {
                 Enemy target = GetFirstEnemy();
                 if (target != null)
                 {
-                    yield return StartCoroutine(AnimateAndPerformAction(player.transform, target.transform, () => player.ExecutePlayerCommands()));
+                    yield return StartCoroutine(AnimateAndPerformAction(player, target, () => player.ExecutePlayerCommands()));
                 }
             }
 
@@ -122,7 +134,7 @@ public class TurnManager : MonoBehaviour
                 Player target = FindObjectOfType<Player>();
                 if (target != null)
                 {
-                    yield return StartCoroutine(AnimateAndPerformAction(enemy.transform, target.transform, () => {
+                    yield return StartCoroutine(AnimateAndPerformAction(target, enemy, () => {
                         if (GameManager.Instance.GetItemList().Count > 0)
                         {
                             GameManager.Instance.player.ExecutePlayerCommands();
@@ -145,23 +157,51 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    private IEnumerator AnimateAndPerformAction(Transform attacker, Transform target, System.Action action)
+    private IEnumerator AnimateAndPerformAction(Player player, Enemy enemy, System.Action action)
     {
-        Vector3 originalScaleAttacker = attacker.localScale;
-        Vector3 originalScaleTarget = target.localScale;
-        
-        // Saldırı yapan ve hedef karakterin ölçeğini büyütme
-        attacker.DOScale(originalScaleAttacker * 2, 0.5f);
-        target.DOScale(originalScaleTarget * 2, 0.5f);
-        yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
+        Vector3 originalScalePlayer = player.transform.localScale;
+        Vector3 originalScaleEnemy = enemy.transform.localScale;
+        Vector3 originalPositionPlayer = player.transform.position;
+        Vector3 originalPositionEnemy = enemy.transform.position;
+
+        // Calculate screen positions
+        Vector2 playerTargetPosition = new Vector2(Screen.width * 0.25f, Screen.height * 0.5f);
+        Vector2 enemyTargetPosition = new Vector2(Screen.width * 0.75f, Screen.height * 0.5f);
+
+        // Convert screen positions to world positions
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, playerTargetPosition, canvas.worldCamera, out Vector3 playerWorldPosition);
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, enemyTargetPosition, canvas.worldCamera, out Vector3 enemyWorldPosition);
+
+        bg.SetActive(true); // Background'u aktif hale getir
+
+        // Player ve enemy'yi hedef pozisyonlara taşıma
+        player.transform.DOMove(playerWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
+        enemy.transform.DOMove(enemyWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
+
+        // Player ve enemy'nin ölçeğini büyütme
+        player.transform.DOScale(originalScalePlayer * 4, 0.5f).SetEase(Ease.InOutQuad);
+        enemy.transform.DOScale(originalScaleEnemy * 4, 0.5f).SetEase(Ease.InOutQuad);
+
+        yield return new WaitForSeconds(2f); // Animasyonun bitmesini bekleme
 
         action.Invoke(); // Aksiyonu gerçekleştirme
-        yield return new WaitForSeconds(1f); // Aksiyonun bitmesini bekleme
 
-        // Saldırı yapan ve hedef karakterin ölçeğini normale döndürme
-        attacker.DOScale(originalScaleAttacker, 0.5f);
-        target.DOScale(originalScaleTarget, 0.5f);
+        // Yeniden kontrol et
+        if (player != null)
+        {
+            player.transform.DOScale(originalScalePlayer, 0.5f).SetEase(Ease.InOutQuad);
+            player.transform.DOMove(originalPositionPlayer, 0.5f).SetEase(Ease.InOutQuad);
+        }
+
+        if (enemy != null)
+        {
+            enemy.transform.DOScale(originalScaleEnemy, 0.5f).SetEase(Ease.InOutQuad);
+            enemy.transform.DOMove(originalPositionEnemy, 0.5f).SetEase(Ease.InOutQuad);
+        }
+
         yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
+
+        bg.SetActive(false); // Background'u pasif hale getir
     }
 
     private void ActivateIconForCurrent()
