@@ -120,33 +120,38 @@ public class TurnManager : MonoBehaviour
                 continue;
             }
 
-            if (character is Player player)
+            Player player = FindAnyObjectByType<Player>();
+            Enemy target = GetFirstEnemy();
+
+            if (character is Player player1)
             {
-                Enemy target = GetFirstEnemy();
-                if (target != null)
-                {
-                    yield return StartCoroutine(AnimateAndPerformAction(player, target, () => player.ExecutePlayerCommands()));
-                }
+                Debug.Log("30. Berkay");
+                yield return StartCoroutine(ScaleAndMoveToCenter(player1, target));
+                yield return new WaitForSeconds(2f);
+                player1.ExecutePlayerCommands();
+                yield return new WaitForSeconds(2f);
+                yield return StartCoroutine(ScaleAndMoveBack(player1, target));
             }
+
+            //yield return new WaitForSeconds(1f);
 
             if (character is Enemy enemy)
             {
-                Player target = FindObjectOfType<Player>();
-                if (target != null)
+                Debug.Log("31ci berkay");
+                //Player target2 = FindObjectOfType<Player>();
+                if (player != null)
                 {
-                    yield return StartCoroutine(AnimateAndPerformAction(target, enemy, () => {
-                        if (GameManager.Instance.GetItemList().Count > 0)
-                        {
-                            GameManager.Instance.player.ExecutePlayerCommands();
-                        }
-                        enemy.PerformAction();
-                    }));
+                    yield return StartCoroutine(ScaleAndMoveToCenter(player, enemy));
+                    player.ExecutePlayerCommands();
+                    yield return new WaitForSeconds(2f);
+                    enemy.PerformAction();
+                    yield return new WaitForSeconds(2f);
+                    yield return StartCoroutine(ScaleAndMoveBack(player, enemy));
                 }
             }
-
-            Player playerRef = FindObjectOfType<Player>();
-            playerRef.ResetDefensiveStates();
-
+            
+            player.ResetDefensiveStates();
+            
             currentTurnIndex++;
             if(currentTurnIndex >= turnList.Count)
             {
@@ -157,7 +162,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    private IEnumerator AnimateAndPerformAction(Player player, Enemy enemy, System.Action action)
+    /*private IEnumerator AnimateAndPerformAction(Player player, Enemy enemy)
     {
         Vector3 originalScalePlayer = player.transform.localScale;
         Vector3 originalScaleEnemy = enemy.transform.localScale;
@@ -184,8 +189,6 @@ public class TurnManager : MonoBehaviour
 
         yield return new WaitForSeconds(2f); // Animasyonun bitmesini bekleme
 
-        action.Invoke(); // Aksiyonu gerçekleştirme
-
         // Yeniden kontrol et
         if (player != null)
         {
@@ -202,7 +205,59 @@ public class TurnManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
 
         bg.SetActive(false); // Background'u pasif hale getir
+    }*/
+
+    private IEnumerator ScaleAndMoveToCenter(Player player, Enemy enemy)
+    {
+        Vector3 originalScalePlayer = player.transform.localScale;
+        Vector3 originalScaleEnemy = enemy.transform.localScale;
+
+        // Calculate screen positions
+        Vector2 playerTargetPosition = new Vector2(Screen.width * 0.25f, Screen.height * 0.5f);
+        Vector2 enemyTargetPosition = new Vector2(Screen.width * 0.75f, Screen.height * 0.5f);
+
+        // Convert screen positions to world positions
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, playerTargetPosition, canvas.worldCamera, out Vector3 playerWorldPosition);
+        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, enemyTargetPosition, canvas.worldCamera, out Vector3 enemyWorldPosition);
+
+        bg.SetActive(true); // Activate the background
+
+        // Move and scale player and enemy to the center
+        player.transform.DOMove(playerWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
+        enemy.transform.DOMove(enemyWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
+
+        player.transform.DOScale(originalScalePlayer * 4, 0.5f).SetEase(Ease.InOutQuad);
+        enemy.transform.DOScale(originalScaleEnemy * 4, 0.5f).SetEase(Ease.InOutQuad);
+
+        yield return new WaitForSeconds(2f); // Wait for the scaling and moving to complete
     }
+
+    private IEnumerator ScaleAndMoveBack(Player player, Enemy enemy)
+    {
+        Debug.Log("Back");
+        Vector3 originalScalePlayer = player.transform.localScale;
+        Vector3 originalScaleEnemy = enemy.transform.localScale;
+        Vector3 originalPositionPlayer = player.transform.position;
+        Vector3 originalPositionEnemy = enemy.transform.position;
+
+        // Move and scale player and enemy back to original positions
+        if (player != null)
+        {
+            player.transform.DOScale(originalScalePlayer, 0.5f).SetEase(Ease.InOutQuad);
+            player.transform.DOMove(originalPositionPlayer, 0.5f).SetEase(Ease.InOutQuad);
+        }
+
+        if (enemy != null)
+        {
+            enemy.transform.DOScale(originalScaleEnemy, 0.5f).SetEase(Ease.InOutQuad);
+            enemy.transform.DOMove(originalPositionEnemy, 0.5f).SetEase(Ease.InOutQuad);
+        }
+
+        yield return new WaitForSeconds(2f); // Wait for the scaling and moving back to complete
+
+        bg.SetActive(false); // Deactivate the background
+    }
+
 
     private void ActivateIconForCurrent()
     {

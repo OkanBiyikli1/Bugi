@@ -17,4 +17,5 @@ MonoBehaviour:
   damage: 1
   order: 1
   sprite: {fileID: 0}
-  attackType: 1
+  attackType: 2
+  defenceType: 1

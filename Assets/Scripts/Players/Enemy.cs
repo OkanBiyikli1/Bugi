@@ -51,7 +51,7 @@ public class Enemy : MonoBehaviour
         if (player != null)
         {
             //TurnManager.Instance.StartCoroutine(TurnManager.Instance.AnimateAndPerformAction(transform, player.transform, () => {
-            switch (stats.attackType)
+            /*switch (stats.attackType)
             {
                 case AttackType.Smash:
                     if (!player.IsDodging())
@@ -73,6 +73,37 @@ public class Enemy : MonoBehaviour
                         Debug.Log(player + " blocked the attack.");
                     }
                     break;
+            }*/
+
+            if(stats.attackType == AttackType.Smash)
+            {
+                switch (player.playerDefenceType)
+                {
+                    case PlayerDefenceType.SliceDef:
+                        player.TakeDamage(stats.damage);
+                        break;
+                    case PlayerDefenceType.SmashDef:
+                        Debug.Log(player + " dodged the attack.");
+                        break;
+                    case PlayerDefenceType.None:
+                        player.TakeDamage(stats.damage);
+                        break;
+                }
+            }
+            else if(stats.attackType == AttackType.Cutting)
+            {
+                switch (player.playerDefenceType)
+                {
+                    case PlayerDefenceType.SliceDef:
+                        Debug.Log(player + " blocked the attack.");
+                        break;
+                    case PlayerDefenceType.SmashDef:
+                        player.TakeDamage(stats.damage);
+                        break;
+                    case PlayerDefenceType.None:
+                        player.TakeDamage(stats.damage);
+                        break;
+                }
             }
         }
     }

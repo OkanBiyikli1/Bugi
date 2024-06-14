@@ -10,8 +10,11 @@ public class Player : MonoBehaviour
     [SerializeField] private int order;
     [SerializeField] private string characterName; // Karakterin ismi
     private Queue<string> playerCommands = new Queue<string>();
-    private bool isBlocking;
-    private bool isDodging;
+    //[SerializeField] private bool isBlocking;
+    //[SerializeField] private bool isDodging;
+    //public bool isSmashing, isSlicening;
+    public PlayerAttackType playerType;
+    public PlayerDefenceType playerDefenceType;
 
     [SerializeField] private Image[] hearts;
 
@@ -37,19 +40,25 @@ public class Player : MonoBehaviour
     {
         switch (action)
         {
-            case "Attack":
-                Debug.Log(characterName + " is attacking with " + damage + " damage.");
+            case "Slice":
+                Debug.Log(characterName + " is slicening  " + damage + " damage.");
+                playerType = PlayerAttackType.Slice;
+                Attack();
+                break;
+            case "Smash":
+                Debug.Log(characterName + " is smashing." + damage + " damage.");
+                playerType = PlayerAttackType.Smash;
                 Attack();
                 break;
             case "Block":
                 Debug.Log(characterName + " is blocking.");
-                isBlocking = true;
-                isDodging = false;
+                //isBlocking = true;
+                playerDefenceType = PlayerDefenceType.SliceDef;
                 break;
             case "Dodge":
                 Debug.Log(characterName + " is dodging.");
-                isDodging = true;
-                isBlocking = false;
+                //isDodging = true;
+                playerDefenceType = PlayerDefenceType.SmashDef;
                 break;
             default:
                 Debug.Log("Unknown action: " + action);
@@ -96,15 +105,36 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if (TurnManager.Instance.IsPlayerTurn())
+        if (TurnManager.Instance.IsPlayerTurn() )
         {
             Enemy target = TurnManager.Instance.GetFirstEnemy();
-            if (target != null)
+            if (target != null) 
             {
-                /*TurnManager.Instance.StartCoroutine(TurnManager.Instance.AnimateAndPerformAction(transform, target.transform, () => {
-                    target.TakeDamage(damage);
-                }));*/
-                target.TakeDamage(damage);
+                if (target.stats.defenceType == DefenceType.SliceDef)
+                {
+                    switch(playerType)
+                    {
+                        case PlayerAttackType.Slice:
+                        Debug.Log("götünü sikim");
+                        break;
+                        case PlayerAttackType.Smash:
+                        target.TakeDamage(damage);
+                        break;
+                    }
+
+                }
+                else if(target.stats.defenceType == DefenceType.SmashDef)
+                {
+                    switch(playerType)
+                    {
+                        case PlayerAttackType.Slice:
+                        target.TakeDamage(damage);
+                        break;
+                        case PlayerAttackType.Smash:
+                        Debug.Log("gültü sikim");
+                        break;
+                    }
+                }
             }
         }
         else
@@ -113,7 +143,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    public bool IsBlocking()
+    /*public bool IsBlocking()
     {
         return isBlocking;
     }
@@ -121,12 +151,14 @@ public class Player : MonoBehaviour
     public bool IsDodging()
     {
         return isDodging;
-    }
+    }*/
 
     public void ResetDefensiveStates()
     {
-        isBlocking = false;
-        isDodging = false;
+        //isBlocking = false;
+        //isDodging = false;
+        playerDefenceType = PlayerDefenceType.None;
+        playerType = PlayerAttackType.None;
     }
 
     public void Heal(int amount)
