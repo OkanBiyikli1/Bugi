@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     public void AddToList(GameObject itemPrefab)
     {
         GameObject newItem = Instantiate(itemPrefab, listContainer);
+        newItem.name = itemPrefab.name;  // Prefab ismini komut olarak kullanıyoruz
         orderList.Add(newItem);
 
         // Yeni item eklendiğinde otomatik olarak en aşağıya kaydır

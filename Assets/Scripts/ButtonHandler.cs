@@ -15,15 +15,14 @@ public class ButtonHandler : MonoBehaviour
 
     void Start()
     {
-        sliceButton.onClick.AddListener(() => AddItem("Slice", slicePrefab));
-        blockButton.onClick.AddListener(() => AddItem("Block", blockPrefab));
-        dodgeButton.onClick.AddListener(() => AddItem("Dodge", dodgePrefab));
-        smashButton.onClick.AddListener(() => AddItem("Smash", smashPrefab));
+        sliceButton.onClick.AddListener(() => AddItem(slicePrefab));
+        blockButton.onClick.AddListener(() => AddItem(blockPrefab));
+        dodgeButton.onClick.AddListener(() => AddItem(dodgePrefab));
+        smashButton.onClick.AddListener(() => AddItem(smashPrefab));
     }
 
-    void AddItem(string command, GameObject itemPrefab)
+    void AddItem(GameObject itemPrefab)
     {
         GameManager.Instance.AddToList(itemPrefab);
-        GameManager.Instance.player.AddCommand(command);
     }
 }

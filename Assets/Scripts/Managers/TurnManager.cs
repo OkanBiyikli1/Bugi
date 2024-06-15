@@ -129,7 +129,7 @@ public class TurnManager : MonoBehaviour
 
             if (character is Player player1)
             {
-                Debug.Log("30. Berkay");
+                Debug.Log("Player oynuyor");
                 originalPositionPlayer = player1.transform.position;
                 originalScalePlayer = player1.transform.localScale;
                 originalPositionEnemy = target.transform.position;
@@ -143,7 +143,7 @@ public class TurnManager : MonoBehaviour
 
             if (character is Enemy enemy)
             {
-                Debug.Log("31ci berkay");
+                Debug.Log("Enemy oynuyor");
                 if (player != null)
                 {
                     originalPositionEnemy = enemy.transform.position;
@@ -167,7 +167,8 @@ public class TurnManager : MonoBehaviour
                 currentTurnIndex = 0;
             }
 
-            GameManager.Instance.RemoveFirstCommandFromList();
+            // GameManager.Instance.RemoveFirstCommandFromList();
+            // yield return new WaitForSeconds(1f);
         }
     }
 
@@ -190,7 +191,7 @@ public class TurnManager : MonoBehaviour
         player.transform.DOScale(player.transform.localScale * 4, 0.5f).SetEase(Ease.InOutQuad);
         enemy.transform.DOScale(enemy.transform.localScale * 4, 0.5f).SetEase(Ease.InOutQuad);
 
-        yield return new WaitForSeconds(2f); // Ölçekleme ve taşımanın tamamlanmasını bekle
+        yield return new WaitForSeconds(1f); // Ölçekleme ve taşımanın tamamlanmasını bekle
     }
 
     private IEnumerator ScaleAndMoveBack(Player player, Enemy enemy)

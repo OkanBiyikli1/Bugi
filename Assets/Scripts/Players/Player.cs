@@ -8,8 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private int currentHealth;
     [SerializeField] private int damage;
     [SerializeField] private int order;
-    [SerializeField] private string characterName; // Karakterin ismi
-    private Queue<string> playerCommands = new Queue<string>();
+    [SerializeField] private string characterName;
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 
@@ -35,15 +34,15 @@ public class Player : MonoBehaviour
 
     public void PerformAction(string action)
     {
-        switch (action)
+        switch (action)//OLUŞTURULAN PREFABLERİN BURADAKİ STRİNG'LER İLE AYNI İSMİ TAŞIYO OLMALI
         {
             case "Slice":
-                Debug.Log(characterName + " is slicening  " + damage + " damage.");
+                Debug.Log(characterName + " is slicing " + damage + " damage.");
                 playerType = PlayerAttackType.Slice;
                 Attack();
                 break;
             case "Smash":
-                Debug.Log(characterName + " is smashing." + damage + " damage.");
+                Debug.Log(characterName + " is smashing " + damage + " damage.");
                 playerType = PlayerAttackType.Smash;
                 Attack();
                 break;
@@ -63,16 +62,12 @@ public class Player : MonoBehaviour
 
     public void ExecutePlayerCommands()
     {
-        if (playerCommands.Count > 0)
+        if (GameManager.Instance.GetItemList().Count > 0)
         {
-            string command = playerCommands.Dequeue();
+            string command = GameManager.Instance.GetItemList()[0].name;
             PerformAction(command);
+            GameManager.Instance.RemoveFirstCommandFromList();
         }
-    }
-
-    public void AddCommand(string command)
-    {
-        playerCommands.Enqueue(command);
     }
 
     public int GetOrder()
@@ -100,34 +95,35 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if (TurnManager.Instance.IsPlayerTurn() )
+        if (TurnManager.Instance.IsPlayerTurn())
         {
             Enemy target = TurnManager.Instance.GetFirstEnemy();
-            if (target != null) 
+            if (target != null)
             {
                 if (target.stats.defenceType == DefenceType.SliceDef)
                 {
-                    switch(playerType)
+                    switch (playerType)
                     {
                         case PlayerAttackType.Slice:
-                        Debug.Log("götünü sikim");
-                        break;
+                            Debug.Log("Yanlış saldırı");
+                            break;
                         case PlayerAttackType.Smash:
-                        target.TakeDamage(damage);
-                        break;
+                            target.TakeDamage(damage);
+                            Debug.Log("Smashledim");
+                            break;
                     }
-
                 }
-                else if(target.stats.defenceType == DefenceType.SmashDef)
+                else if (target.stats.defenceType == DefenceType.SmashDef)
                 {
-                    switch(playerType)
+                    switch (playerType)
                     {
                         case PlayerAttackType.Slice:
-                        target.TakeDamage(damage);
-                        break;
+                            target.TakeDamage(damage);
+                            Debug.Log("Sliceledim");
+                            break;
                         case PlayerAttackType.Smash:
-                        Debug.Log("gültü sikim");
-                        break;
+                            Debug.Log("Yanlış saldırı");
+                            break;
                     }
                 }
             }

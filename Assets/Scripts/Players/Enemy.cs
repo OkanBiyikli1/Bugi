@@ -52,6 +52,7 @@ public class Enemy : MonoBehaviour
         {
             if(stats.attackType == AttackType.Smash)
             {
+                Debug.Log("enemy smashing");
                 switch (player.playerDefenceType)
                 {
                     case PlayerDefenceType.SliceDef:
@@ -67,6 +68,7 @@ public class Enemy : MonoBehaviour
             }
             else if(stats.attackType == AttackType.Cutting)
             {
+                Debug.Log("enemy cutting");
                 switch (player.playerDefenceType)
                 {
                     case PlayerDefenceType.SliceDef:
