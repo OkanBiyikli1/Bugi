@@ -11,6 +11,11 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private GameObject bg; // Background GameObject'i
     [SerializeField] private Canvas canvas; // Oyun canvas'ı
 
+    private Vector3 originalPositionPlayer;
+    private Vector3 originalScalePlayer;
+    private Vector3 originalPositionEnemy;
+    private Vector3 originalScaleEnemy;
+
     private void Awake()
     {
         if (Instance == null)
@@ -25,7 +30,7 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(InitializeAfterDelay(1f)); // Start the coroutine with a 2-second delay
+        StartCoroutine(InitializeAfterDelay(1f)); // Start the coroutine with a 1-second delay
     }
 
     IEnumerator InitializeAfterDelay(float delay)
@@ -81,7 +86,6 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
-        //ActivateIconForCurrent(); // Liste sıralandığında aktif karakterin ikonunu aktifleştir
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -126,6 +130,10 @@ public class TurnManager : MonoBehaviour
             if (character is Player player1)
             {
                 Debug.Log("30. Berkay");
+                originalPositionPlayer = player1.transform.position;
+                originalScalePlayer = player1.transform.localScale;
+                originalPositionEnemy = target.transform.position;
+                originalScaleEnemy = target.transform.localScale;
                 yield return StartCoroutine(ScaleAndMoveToCenter(player1, target));
                 yield return new WaitForSeconds(2f);
                 player1.ExecutePlayerCommands();
@@ -133,14 +141,15 @@ public class TurnManager : MonoBehaviour
                 yield return StartCoroutine(ScaleAndMoveBack(player1, target));
             }
 
-            //yield return new WaitForSeconds(1f);
-
             if (character is Enemy enemy)
             {
                 Debug.Log("31ci berkay");
-                //Player target2 = FindObjectOfType<Player>();
                 if (player != null)
                 {
+                    originalPositionEnemy = enemy.transform.position;
+                    originalScaleEnemy = enemy.transform.localScale;
+                    originalPositionPlayer = player.transform.position;
+                    originalScalePlayer = player.transform.localScale;
                     yield return StartCoroutine(ScaleAndMoveToCenter(player, enemy));
                     player.ExecutePlayerCommands();
                     yield return new WaitForSeconds(2f);
@@ -149,11 +158,11 @@ public class TurnManager : MonoBehaviour
                     yield return StartCoroutine(ScaleAndMoveBack(player, enemy));
                 }
             }
-            
+
             player.ResetDefensiveStates();
-            
+
             currentTurnIndex++;
-            if(currentTurnIndex >= turnList.Count)
+            if (currentTurnIndex >= turnList.Count)
             {
                 currentTurnIndex = 0;
             }
@@ -162,85 +171,33 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    /*private IEnumerator AnimateAndPerformAction(Player player, Enemy enemy)
-    {
-        Vector3 originalScalePlayer = player.transform.localScale;
-        Vector3 originalScaleEnemy = enemy.transform.localScale;
-        Vector3 originalPositionPlayer = player.transform.position;
-        Vector3 originalPositionEnemy = enemy.transform.position;
-
-        // Calculate screen positions
-        Vector2 playerTargetPosition = new Vector2(Screen.width * 0.25f, Screen.height * 0.5f);
-        Vector2 enemyTargetPosition = new Vector2(Screen.width * 0.75f, Screen.height * 0.5f);
-
-        // Convert screen positions to world positions
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, playerTargetPosition, canvas.worldCamera, out Vector3 playerWorldPosition);
-        RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, enemyTargetPosition, canvas.worldCamera, out Vector3 enemyWorldPosition);
-
-        bg.SetActive(true); // Background'u aktif hale getir
-
-        // Player ve enemy'yi hedef pozisyonlara taşıma
-        player.transform.DOMove(playerWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
-        enemy.transform.DOMove(enemyWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
-
-        // Player ve enemy'nin ölçeğini büyütme
-        player.transform.DOScale(originalScalePlayer * 4, 0.5f).SetEase(Ease.InOutQuad);
-        enemy.transform.DOScale(originalScaleEnemy * 4, 0.5f).SetEase(Ease.InOutQuad);
-
-        yield return new WaitForSeconds(2f); // Animasyonun bitmesini bekleme
-
-        // Yeniden kontrol et
-        if (player != null)
-        {
-            player.transform.DOScale(originalScalePlayer, 0.5f).SetEase(Ease.InOutQuad);
-            player.transform.DOMove(originalPositionPlayer, 0.5f).SetEase(Ease.InOutQuad);
-        }
-
-        if (enemy != null)
-        {
-            enemy.transform.DOScale(originalScaleEnemy, 0.5f).SetEase(Ease.InOutQuad);
-            enemy.transform.DOMove(originalPositionEnemy, 0.5f).SetEase(Ease.InOutQuad);
-        }
-
-        yield return new WaitForSeconds(0.5f); // Animasyonun bitmesini bekleme
-
-        bg.SetActive(false); // Background'u pasif hale getir
-    }*/
-
     private IEnumerator ScaleAndMoveToCenter(Player player, Enemy enemy)
     {
-        Vector3 originalScalePlayer = player.transform.localScale;
-        Vector3 originalScaleEnemy = enemy.transform.localScale;
-
-        // Calculate screen positions
+        // Ekran pozisyonlarını hesapla
         Vector2 playerTargetPosition = new Vector2(Screen.width * 0.25f, Screen.height * 0.5f);
         Vector2 enemyTargetPosition = new Vector2(Screen.width * 0.75f, Screen.height * 0.5f);
 
-        // Convert screen positions to world positions
+        // Ekran pozisyonlarını dünya pozisyonlarına çevir
         RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, playerTargetPosition, canvas.worldCamera, out Vector3 playerWorldPosition);
         RectTransformUtility.ScreenPointToWorldPointInRectangle(canvas.transform as RectTransform, enemyTargetPosition, canvas.worldCamera, out Vector3 enemyWorldPosition);
 
-        bg.SetActive(true); // Activate the background
+        bg.SetActive(true); // Arka planı aktif hale getir
 
-        // Move and scale player and enemy to the center
+        // Oyuncu ve düşmanı merkeze taşı ve ölçekle
         player.transform.DOMove(playerWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
         enemy.transform.DOMove(enemyWorldPosition, 0.5f).SetEase(Ease.InOutQuad);
 
-        player.transform.DOScale(originalScalePlayer * 4, 0.5f).SetEase(Ease.InOutQuad);
-        enemy.transform.DOScale(originalScaleEnemy * 4, 0.5f).SetEase(Ease.InOutQuad);
+        player.transform.DOScale(player.transform.localScale * 4, 0.5f).SetEase(Ease.InOutQuad);
+        enemy.transform.DOScale(enemy.transform.localScale * 4, 0.5f).SetEase(Ease.InOutQuad);
 
-        yield return new WaitForSeconds(2f); // Wait for the scaling and moving to complete
+        yield return new WaitForSeconds(2f); // Ölçekleme ve taşımanın tamamlanmasını bekle
     }
 
     private IEnumerator ScaleAndMoveBack(Player player, Enemy enemy)
     {
         Debug.Log("Back");
-        Vector3 originalScalePlayer = player.transform.localScale;
-        Vector3 originalScaleEnemy = enemy.transform.localScale;
-        Vector3 originalPositionPlayer = player.transform.position;
-        Vector3 originalPositionEnemy = enemy.transform.position;
 
-        // Move and scale player and enemy back to original positions
+        // Oyuncu ve düşmanı orijinal pozisyonlarına ve ölçeklerine geri taşı
         if (player != null)
         {
             player.transform.DOScale(originalScalePlayer, 0.5f).SetEase(Ease.InOutQuad);
@@ -253,19 +210,16 @@ public class TurnManager : MonoBehaviour
             enemy.transform.DOMove(originalPositionEnemy, 0.5f).SetEase(Ease.InOutQuad);
         }
 
-        yield return new WaitForSeconds(2f); // Wait for the scaling and moving back to complete
+        yield return new WaitForSeconds(1f); // Ölçekleme ve geri taşımanın tamamlanmasını bekle
 
-        bg.SetActive(false); // Deactivate the background
+        bg.SetActive(false); // Arka planı pasif hale getir
     }
-
 
     private void ActivateIconForCurrent()
     {
-        //DeactivateAllIcons();
         GameObject currentCharacter = turnList[currentTurnIndex].gameObject;
         Transform turnIconParent = currentCharacter.transform.Find("TurnIconParent");
         turnIconParent.GetChild(0).gameObject.SetActive(true);
-        //Debug.Log("Ikonlar aktif");
     }
 
     public void DeactivateAllIcons()
@@ -274,7 +228,6 @@ public class TurnManager : MonoBehaviour
         {
             Transform turnIconParent = character.gameObject.transform.Find("TurnIconParent");
             turnIconParent.GetChild(0).gameObject.SetActive(false);
-            //Debug.Log("Ikonlar aktif degil");
         }
     }
 
