@@ -10,9 +10,6 @@ public class Player : MonoBehaviour
     [SerializeField] private int order;
     [SerializeField] private string characterName; // Karakterin ismi
     private Queue<string> playerCommands = new Queue<string>();
-    //[SerializeField] private bool isBlocking;
-    //[SerializeField] private bool isDodging;
-    //public bool isSmashing, isSlicening;
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 
@@ -52,12 +49,10 @@ public class Player : MonoBehaviour
                 break;
             case "Block":
                 Debug.Log(characterName + " is blocking.");
-                //isBlocking = true;
                 playerDefenceType = PlayerDefenceType.SliceDef;
                 break;
             case "Dodge":
                 Debug.Log(characterName + " is dodging.");
-                //isDodging = true;
                 playerDefenceType = PlayerDefenceType.SmashDef;
                 break;
             default:
@@ -143,20 +138,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    /*public bool IsBlocking()
-    {
-        return isBlocking;
-    }
-
-    public bool IsDodging()
-    {
-        return isDodging;
-    }*/
-
     public void ResetDefensiveStates()
     {
-        //isBlocking = false;
-        //isDodging = false;
         playerDefenceType = PlayerDefenceType.None;
         playerType = PlayerAttackType.None;
     }

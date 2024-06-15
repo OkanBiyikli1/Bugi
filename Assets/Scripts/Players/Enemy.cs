@@ -50,31 +50,6 @@ public class Enemy : MonoBehaviour
         Player player = FindObjectOfType<Player>();
         if (player != null)
         {
-            //TurnManager.Instance.StartCoroutine(TurnManager.Instance.AnimateAndPerformAction(transform, player.transform, () => {
-            /*switch (stats.attackType)
-            {
-                case AttackType.Smash:
-                    if (!player.IsDodging())
-                    {
-                        player.TakeDamage(stats.damage);
-                    }
-                    else
-                    {
-                        Debug.Log(player + " dodged the attack.");
-                    }
-                    break;
-                case AttackType.Cutting:
-                    if (!player.IsBlocking())
-                    {
-                        player.TakeDamage(stats.damage);
-                    }
-                    else
-                    {
-                        Debug.Log(player + " blocked the attack.");
-                    }
-                    break;
-            }*/
-
             if(stats.attackType == AttackType.Smash)
             {
                 switch (player.playerDefenceType)

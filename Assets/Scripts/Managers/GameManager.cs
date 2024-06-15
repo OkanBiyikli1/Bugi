@@ -27,7 +27,6 @@ public class GameManager : MonoBehaviour
     {
         GameObject newItem = Instantiate(itemPrefab, listContainer);
         orderList.Add(newItem);
-        //Debug.Log("Item added: " + newItem.name);
 
         // Yeni item eklendiğinde otomatik olarak en aşağıya kaydır
         autoScroll.ScrollToBottom();
@@ -38,7 +37,6 @@ public class GameManager : MonoBehaviour
         if (orderList.Contains(item))
         {
             orderList.Remove(item);
-            //Debug.Log("Item removed: " + item.name);
         }
     }
 
@@ -49,14 +47,6 @@ public class GameManager : MonoBehaviour
             GameObject firstItem = orderList[0];
             orderList.RemoveAt(0);
             Destroy(firstItem);
-            //Debug.Log("First item removed");
-
-            /*if (orderList.Count == 0 && turnCoroutine != null)
-            {
-                StopCoroutine(turnCoroutine);
-                TurnManager.Instance.ResetTurnIndex(); // Turn sırasını bir sonraki karakterden başlat
-                //Debug.Log("No more commands. Stopping turns.");
-            }*/
         }
     }
 
@@ -64,11 +54,6 @@ public class GameManager : MonoBehaviour
     {
         return orderList;
     }
-
-    /*public bool CanStartGeneration()
-    {
-        return orderList.Count > 0;
-    }*/
 
     public void OnGenerateButtonClicked()
     {
