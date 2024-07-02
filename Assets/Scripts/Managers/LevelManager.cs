@@ -74,8 +74,7 @@ public class LevelManager : MonoBehaviour
             StartLevel(currentLevelIndex);
             //InitializeLevelManager();
             StartCoroutine(TurnManager.Instance.InitializeAfterDelay(1f));
-            nextLevelPanel.SetActive(true);
-            DisplayRandomTip();
+            DisplayRandomTipandPanel();
             Debug.Log("next level babyyyyy");
         }
     }
@@ -86,9 +85,10 @@ public class LevelManager : MonoBehaviour
         Debug.Log("Enemies Count: " + enemiesCount);
     }
 
-    private void DisplayRandomTip()
+    private void DisplayRandomTipandPanel()
     {
         int randomIndex = Random.Range(0, tips.Count);
         tipText.text = "Tip: " + tips[randomIndex];
+        nextLevelPanel.SetActive(true);
     }
 }
