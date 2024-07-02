@@ -33,10 +33,11 @@ public class TurnManager : MonoBehaviour
         StartCoroutine(InitializeAfterDelay(1f)); // Start the coroutine with a 1-second delay
     }
 
-    IEnumerator InitializeAfterDelay(float delay)
+    public IEnumerator InitializeAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay); // Wait for the specified delay
 
+        LevelManager.instance.UpdateEnemiesCount();
         AddAllCharactersToList();
         SortCharactersByOrder();
         ActivateIconForCurrent(); // Execute after delay
@@ -107,10 +108,25 @@ public class TurnManager : MonoBehaviour
         {
             if (GameManager.Instance.GetItemList().Count == 0)
             {
+                if(LevelManager.instance.enemiesCount == 0)
+                {
+                    LevelManager.instance.NextLevel();
+                    Debug.Log("durdum ve level geçtim");
+                    yield break;
+                }
+
                 ActivateIconForCurrent();
                 Debug.Log("Durdurdum");
                 yield break;
             }
+            else if(LevelManager.instance.enemiesCount == 0)
+            {
+                LevelManager.instance.NextLevel();
+                GameManager.Instance.ClearOrderList();
+                Debug.Log("asfasmasafaz 2 2 2 2 ");
+                yield break;
+            }
+
 
             var character = turnList[currentTurnIndex];
 
@@ -167,6 +183,8 @@ public class TurnManager : MonoBehaviour
                 currentTurnIndex = 0;
             }
 
+            GameManager.Instance.RemoveFirstCommandFromList();
+            yield return new WaitForSeconds(.5f);
             // GameManager.Instance.RemoveFirstCommandFromList();
             // yield return new WaitForSeconds(1f);
         }

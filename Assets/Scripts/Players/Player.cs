@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
         {
             string command = GameManager.Instance.GetItemList()[0].name;
             PerformAction(command);
-            GameManager.Instance.RemoveFirstCommandFromList();
+            //GameManager.Instance.RemoveFirstCommandFromList();
         }
     }
 

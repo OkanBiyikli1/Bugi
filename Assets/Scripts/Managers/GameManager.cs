@@ -41,6 +41,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ClearOrderList()
+    {
+        foreach (GameObject item in orderList)
+        {
+            Destroy(item);
+        }
+        orderList.Clear();
+    }
+
     public void RemoveFirstCommandFromList()
     {
         if (orderList.Count > 0)
@@ -58,7 +67,7 @@ public class GameManager : MonoBehaviour
 
     public void OnGenerateButtonClicked()
     {
-        if (orderList.Count > 0)
+        if (orderList.Count > 1)
         {
             StartCoroutine(TurnManager.Instance.ExecuteTurns());
             TurnManager.Instance.DeactivateAllIcons();

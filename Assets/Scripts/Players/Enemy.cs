@@ -43,6 +43,8 @@ public class Enemy : MonoBehaviour
         Debug.Log(stats.charName + " has died.");
         TurnManager.Instance.RemoveCharacterFromList(this);
         Destroy(gameObject);
+
+        LevelManager.instance.enemiesCount--;
     }
 
     private void Attack()
