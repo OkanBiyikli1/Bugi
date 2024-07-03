@@ -79,6 +79,11 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    public void RemoveAllCharactersFromList()
+    {
+        turnList.Clear();
+    }
+
     public void SortCharactersByOrder()
     {
         turnList.Sort((x, y) =>
@@ -110,6 +115,8 @@ public class TurnManager : MonoBehaviour
             {
                 if(LevelManager.instance.enemiesCount == 0)
                 {
+                    //RemoveAllCharactersFromList();
+                    turnList.Clear();
                     LevelManager.instance.NextLevel();
                     Debug.Log("durdum ve level geçtim");
                     yield break;
@@ -121,6 +128,8 @@ public class TurnManager : MonoBehaviour
             }
             else if(LevelManager.instance.enemiesCount == 0)
             {
+                //RemoveAllCharactersFromList();
+                turnList.Clear();
                 LevelManager.instance.NextLevel();
                 GameManager.Instance.ClearOrderList();
                 Debug.Log("asfasmasafaz 2 2 2 2 ");
