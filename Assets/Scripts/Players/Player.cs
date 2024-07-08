@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
 
     [SerializeField] private Image[] hearts;
 
+    public Animator playerAnim;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -78,6 +80,7 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        playerAnim.SetBool("takeHit" , true);
         if (currentHealth < 0) currentHealth = 0;
         Debug.Log(characterName + " took " + damage + " damage. Health now: " + currentHealth);
         UpdateHeartsUI();
@@ -105,10 +108,12 @@ public class Player : MonoBehaviour
                     switch (playerType)
                     {
                         case PlayerAttackType.Slice:
+                            playerAnim.SetBool("sliceAttack", true);
                             Debug.Log("Yanlış saldırı");
                             break;
                         case PlayerAttackType.Smash:
                             target.TakeDamage(damage);
+                            playerAnim.SetBool("smashAttack", true);
                             Debug.Log("Smashledim");
                             break;
                     }
@@ -119,19 +124,30 @@ public class Player : MonoBehaviour
                     {
                         case PlayerAttackType.Slice:
                             target.TakeDamage(damage);
+                            playerAnim.SetBool("sliceAttack", true);
                             Debug.Log("Sliceledim");
                             break;
                         case PlayerAttackType.Smash:
                             Debug.Log("Yanlış saldırı");
+                            playerAnim.SetBool("smashAttack", true);
                             break;
                     }
                 }
+                //playerAnim.SetBool("smashAttack", false);
+                //playerAnim.SetBool("sliceAttack", false);
             }
         }
         else
         {
             Debug.Log("Sırayı kaçırdın");
         }
+    }
+
+    public void AnimationBoolFalse()
+    {
+        playerAnim.SetBool("smashAttack", false);
+        playerAnim.SetBool("sliceAttack", false);
+        playerAnim.SetBool("takeHit", false);
     }
 
     public void ResetDefensiveStates()

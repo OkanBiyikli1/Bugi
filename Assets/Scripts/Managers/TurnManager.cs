@@ -162,7 +162,8 @@ public class TurnManager : MonoBehaviour
                 yield return StartCoroutine(ScaleAndMoveToCenter(player1, target));
                 yield return new WaitForSeconds(2f);
                 player1.ExecutePlayerCommands();
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(1f);
+                player1.AnimationBoolFalse();
                 yield return StartCoroutine(ScaleAndMoveBack(player1, target));
             }
 
@@ -179,7 +180,8 @@ public class TurnManager : MonoBehaviour
                     player.ExecutePlayerCommands();
                     yield return new WaitForSeconds(2f);
                     enemy.PerformAction();
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(1f);
+                    player.AnimationBoolFalse();
                     yield return StartCoroutine(ScaleAndMoveBack(player, enemy));
                 }
             }

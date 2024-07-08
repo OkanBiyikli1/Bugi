@@ -9,6 +9,11 @@ public class GameManager : MonoBehaviour
     public Transform listContainer; // Objelerin ekleneceği parent transform
     public AutoScroll autoScroll;  // AutoScroll scripti referansı
 
+
+    [SerializeField] private int collectedCoin = 10; //kazanacağımız coin miktarını hesaplamak için parametre
+    public int earnedCoin;//kazanacağımız coin
+    [SerializeField] private int buttonClickCalculator;//generate buttonuna kaç kere bastığımızı hesaplayan parametre
+
     public Player player;
 
     private void Awake()
@@ -71,10 +76,17 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(TurnManager.Instance.ExecuteTurns());
             TurnManager.Instance.DeactivateAllIcons();
+            buttonClickCalculator++;
+            CalculateEarnedCoin();
         }
         else
         {
             Debug.Log("Order list is empty. Cannot start generation.");
         }
+    }
+
+    public void CalculateEarnedCoin()
+    {
+        earnedCoin = collectedCoin / buttonClickCalculator;
     }
 }

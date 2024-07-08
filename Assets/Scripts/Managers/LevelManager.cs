@@ -13,6 +13,9 @@ public class LevelManager : MonoBehaviour
 
     public int enemiesCount;
 
+    [SerializeField] private CoinData coin;
+    [SerializeField] private CoinUI coinUI;
+
     public static LevelManager instance;
 
     [SerializeField] private List<string> tips = new List<string>
@@ -75,6 +78,8 @@ public class LevelManager : MonoBehaviour
             //InitializeLevelManager();
             StartCoroutine(TurnManager.Instance.InitializeAfterDelay(1f));
             DisplayRandomTipandPanel();
+            EarnedCoin(GameManager.Instance.earnedCoin);
+            coinUI.DisplayCoinAmount();
             Debug.Log("next level babyyyyy");
         }
     }
@@ -90,5 +95,10 @@ public class LevelManager : MonoBehaviour
         int randomIndex = Random.Range(0, tips.Count);
         tipText.text = "Tip: " + tips[randomIndex];
         nextLevelPanel.SetActive(true);
+    }
+
+    public void EarnedCoin(int amount)
+    {
+        coin.coinAmount += amount;
     }
 }
