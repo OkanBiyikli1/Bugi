@@ -9,10 +9,9 @@ public class GameManager : MonoBehaviour
     public Transform listContainer; // Objelerin ekleneceği parent transform
     public AutoScroll autoScroll;  // AutoScroll scripti referansı
 
-
-    [SerializeField] private int collectedCoin = 10; //kazanacağımız coin miktarını hesaplamak için parametre
-    public int earnedCoin;//kazanacağımız coin
-    [SerializeField] private int buttonClickCalculator;//generate buttonuna kaç kere bastığımızı hesaplayan parametre
+    [SerializeField] public int collectedCoin = 10; // Kazanacağımız coin miktarını hesaplamak için parametre
+    public int earnedCoin; // Kazanacağımız coin
+    [SerializeField] private int buttonClickCalculator; // Generate buttonuna kaç kere bastığımızı hesaplayan parametre
 
     public Player player;
 

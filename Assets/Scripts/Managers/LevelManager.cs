@@ -80,6 +80,7 @@ public class LevelManager : MonoBehaviour
             DisplayRandomTipandPanel();
             EarnedCoin(GameManager.Instance.earnedCoin);
             coinUI.DisplayCoinAmount();
+            BoostManager.instance.RemoveTemporaryBoosts();
             Debug.Log("next level babyyyyy");
         }
     }

@@ -9,7 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdf484befe67f44618a60a0efc376725, type: 3}
-  m_Name: Coin
+  m_Script: {fileID: 11500000, guid: e09e07ed5586f41349562af8b8194bbc, type: 3}
+  m_Name: CoinMultiplier
   m_EditorClassIdentifier: 
-  coinAmount: 100000000
+  description: Coin Multiplier
+  cost: 500
+  boostType: 5
+  amount: 10

@@ -4,15 +4,15 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int maxHealth;
-    [SerializeField] private int currentHealth;
-    [SerializeField] private int damage;
+    public int maxHealth;
+    public int currentHealth;
+    public int damage;
     [SerializeField] private int order;
     [SerializeField] private string characterName;
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 
-    [SerializeField] private Image[] hearts;
+    [SerializeField] public Image[] hearts;
 
     public Animator playerAnim;
 
