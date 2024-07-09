@@ -14,6 +14,13 @@ public class BoostManager : MonoBehaviour
 
     [SerializeField] private List<BoostData> activeTemporaryBoosts = new List<BoostData>();
 
+    [Header("UI Stuff")]
+
+    [SerializeField] private GameObject boostPanel;
+    [SerializeField] private Button openPanelButton;
+    [SerializeField] private Button closePanelButton;
+    [SerializeField] private GameObject buttons;
+
     public static BoostManager instance;
 
     void Awake()
@@ -43,6 +50,10 @@ public class BoostManager : MonoBehaviour
             descriptionText.text = boostDataList[i].description;
             costText.text = boostDataList[i].cost.ToString();
         }
+
+        boostPanel.SetActive(false);
+        openPanelButton.onClick.AddListener(ActivatePanel);
+        closePanelButton.onClick.AddListener(ClosePanel);
     }
 
     void PurchaseBoost(BoostData boost)
@@ -52,6 +63,7 @@ public class BoostManager : MonoBehaviour
             coinData.coinAmount -= boost.cost;
             coinUI.DisplayCoinAmount();
             ApplyBoost(boost);
+            ClosePanel();
         }
         else
         {
@@ -111,5 +123,23 @@ public class BoostManager : MonoBehaviour
             }
         }
         activeTemporaryBoosts.Clear();
+    }
+
+    private void ActivatePanel()
+    {
+        boostPanel.SetActive(true);
+        openPanelButton.gameObject.SetActive(false);
+        buttons.SetActive(false);
+
+        //boostPanel.transform.DOScale(1, 0.5f).SetEase(Ease.InOutQuad);
+    }
+
+    private void ClosePanel()
+    {
+        boostPanel.SetActive(false);
+        openPanelButton.gameObject.SetActive(true);
+        buttons.SetActive(true);
+
+        //boostPanel.transform.DOScale(0, 0.5f).SetEase(Ease.InOutQuad);
     }
 }
