@@ -14,9 +14,6 @@ public class BoostManager : MonoBehaviour
 
     [SerializeField] private List<BoostData> activeTemporaryBoosts = new List<BoostData>();
 
-    //[SerializeField] private GameObject healthObj;
-    //[SerializeField] private Transform healthContainer;
-
     public static BoostManager instance;
 
     void Awake()
@@ -67,44 +64,33 @@ public class BoostManager : MonoBehaviour
         switch (boost.boostType)
         {
             case BoostType.PermanentHealth:
-
-                //player.maxHealth += boost.amount;
-                if(player.currentHealth < player.maxHealth)
+                if (player.currentHealth < player.maxHealth)
                 {
                     player.currentHealth += boost.amount;
                     player.UpdateHeartsUI();
                 }
                 break;
-
             case BoostType.TemporaryHealth:
-
-                if(player.currentHealth < player.maxHealth)
+                if (player.currentHealth < player.maxHealth) // Bu kontrolü geri ekleyelim
                 {
-                    player.currentHealth += boost.amount;
+                    player.AddTemporaryHealth(boost.amount);
                     activeTemporaryBoosts.Add(boost);
-                    player.UpdateHeartsUI();
                 }
                 break;
-
             case BoostType.TemporaryDamage:
-
                 player.damage += boost.amount;
                 activeTemporaryBoosts.Add(boost);
                 break;
-
             case BoostType.PermanentDamage:
-
                 player.damage += boost.amount;
                 break;
-
             case BoostType.MaxHealthIncrease:
-
+                if(player.maxHealth < player.hearts.Length)
                 player.maxHealth += boost.amount;
-                player.UpdateHeartsUI();
+                player.UpdateHeartsArray(); // maxHealth arttığında hearts dizisini güncelle
+                player.UpdateHeartsUI(); // maxHealth arttığında currentHealth'i de güncelle
                 break;
-
             case BoostType.CoinMultiplier:
-
                 GameManager.Instance.collectedCoin += boost.amount;
                 break;
         }
@@ -117,8 +103,7 @@ public class BoostManager : MonoBehaviour
             switch (boost.boostType)
             {
                 case BoostType.TemporaryHealth:
-                    player.currentHealth -= boost.amount;
-                    player.UpdateHeartsUI();
+                    player.RemoveTemporaryHealth(boost.amount);
                     break;
                 case BoostType.TemporaryDamage:
                     player.damage -= boost.amount;
@@ -127,9 +112,4 @@ public class BoostManager : MonoBehaviour
         }
         activeTemporaryBoosts.Clear();
     }
-
-    /*void IncreaseMaxHealthUI()
-    {
-        Instantiate(healthObj, healthContainer);
-    }*/
 }

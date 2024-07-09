@@ -6,20 +6,23 @@ public class Player : MonoBehaviour
 {
     public int maxHealth;
     public int currentHealth;
+    private int originalHealth; // Geçici can eklendiğinde orijinal canı tutar
     public int damage;
     [SerializeField] private int order;
     [SerializeField] private string characterName;
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 
-    [SerializeField] public Image[] hearts;
+    [SerializeField] public GameObject[] hearts; // Parent objeleri temsil eder
 
     public Animator playerAnim;
 
     void Start()
     {
         currentHealth = maxHealth;
-        UpdateHeartsUI();
+        originalHealth = currentHealth; // Orijinal canı başlangıçta currentHealth olarak ayarla
+        UpdateHeartsArray(); // maxHealth ile hearts dizisini eşleştir
+        UpdateHeartsUI(); // currentHealth ile child objelerini eşleştir
     }
 
     void Update()
@@ -36,7 +39,7 @@ public class Player : MonoBehaviour
 
     public void PerformAction(string action)
     {
-        switch (action)//OLUŞTURULAN PREFABLERİN BURADAKİ STRİNG'LER İLE AYNI İSMİ TAŞIYO OLMALI
+        switch (action)
         {
             case "Slice":
                 Debug.Log(characterName + " is slicing " + damage + " damage.");
@@ -68,7 +71,6 @@ public class Player : MonoBehaviour
         {
             string command = GameManager.Instance.GetItemList()[0].name;
             PerformAction(command);
-            //GameManager.Instance.RemoveFirstCommandFromList();
         }
     }
 
@@ -80,7 +82,14 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        playerAnim.SetBool("takeHit" , true);
+
+        // Orijinal canın altına düşme durumu kontrol edilir
+        if (currentHealth < originalHealth)
+        {
+            currentHealth = originalHealth;
+        }
+
+        playerAnim.SetBool("takeHit", true);
         if (currentHealth < 0) currentHealth = 0;
         Debug.Log(characterName + " took " + damage + " damage. Health now: " + currentHealth);
         UpdateHeartsUI();
@@ -109,12 +118,12 @@ public class Player : MonoBehaviour
                     {
                         case PlayerAttackType.Slice:
                             playerAnim.SetBool("sliceAttack", true);
-                            Debug.Log("Yanlış saldırı");
+                            Debug.Log("Wrong attack");
                             break;
                         case PlayerAttackType.Smash:
                             target.TakeDamage(damage);
                             playerAnim.SetBool("smashAttack", true);
-                            Debug.Log("Smashledim");
+                            Debug.Log("Smashed");
                             break;
                     }
                 }
@@ -125,21 +134,19 @@ public class Player : MonoBehaviour
                         case PlayerAttackType.Slice:
                             target.TakeDamage(damage);
                             playerAnim.SetBool("sliceAttack", true);
-                            Debug.Log("Sliceledim");
+                            Debug.Log("Sliced");
                             break;
                         case PlayerAttackType.Smash:
-                            Debug.Log("Yanlış saldırı");
+                            Debug.Log("Wrong attack");
                             playerAnim.SetBool("smashAttack", true);
                             break;
                     }
                 }
-                //playerAnim.SetBool("smashAttack", false);
-                //playerAnim.SetBool("sliceAttack", false);
             }
         }
         else
         {
-            Debug.Log("Sırayı kaçırdın");
+            Debug.Log("Missed turn");
         }
     }
 
@@ -168,14 +175,43 @@ public class Player : MonoBehaviour
     {
         for (int i = 0; i < hearts.Length; i++)
         {
-            if (i < currentHealth)
+            // Parent objenin child'ını alın
+            Transform heartChild = hearts[i].transform.GetChild(0);
+
+            // Parent objeyi maxHealth'e göre aktif/deaktif yap
+            hearts[i].SetActive(i < maxHealth);
+
+            // Child objeyi currentHealth'e göre aktif/deaktif yap
+            if (heartChild != null)
             {
-                hearts[i].gameObject.SetActive(true);
-            }
-            else
-            {
-                hearts[i].gameObject.SetActive(false);
+                heartChild.gameObject.SetActive(i < currentHealth);
             }
         }
+    }
+
+    public void UpdateHeartsArray()
+    {
+        for (int i = 0; i < hearts.Length; i++)
+        {
+            hearts[i].SetActive(i < maxHealth);
+        }
+    }
+
+    public void AddTemporaryHealth(int amount)
+    {
+        originalHealth = currentHealth; // Geçici can eklenmeden önce orijinal canı kaydet
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth; // maxHealth'i aşmamalı
+        UpdateHeartsUI();
+    }
+
+    public void RemoveTemporaryHealth(int amount)
+    {
+        currentHealth -= amount;
+        if (currentHealth < originalHealth)
+        {
+            currentHealth = originalHealth; // Eğer currentHealth orijinal canın altına düşerse, orijinal cana ayarla
+        }
+        UpdateHeartsUI();
     }
 }
