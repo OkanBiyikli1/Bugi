@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening; // DoTween kütüphanesini ekliyoruz
+using UnityEngine.UI;
+using TMPro;
 
 public class TurnManager : MonoBehaviour
 {
@@ -15,6 +17,13 @@ public class TurnManager : MonoBehaviour
     private Vector3 originalScalePlayer;
     private Vector3 originalPositionEnemy;
     private Vector3 originalScaleEnemy;
+
+    [Header("UI")]
+    [SerializeField] private GameObject turnListPanel; // Turn listesinin gösterileceği panel
+    [SerializeField] private GameObject[] turnListItems; // Turn listesinde kullanılacak UI elemanları (image + text)
+    [SerializeField] private Button openButton, closeButton; // Turn listesini açmak için kullanılan buton
+    [SerializeField] private GameObject buttons;//turn list aktif edildiğinde kapatılacak itemler
+    [SerializeField] private GameObject boostPanelButton;//Turn list açıldığında kapatılacak diğer button BU KISMI İLERDE DEĞİŞİCEZ
 
     private void Awake()
     {
@@ -31,6 +40,9 @@ public class TurnManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(InitializeAfterDelay(1f)); // Start the coroutine with a 1-second delay
+        openButton.onClick.AddListener(OpenTurnListPanel); // OpenButton tıklama olayı
+        closeButton.onClick.AddListener(CloseTurnListPanel);
+        turnListPanel.SetActive(false);
     }
 
     public IEnumerator InitializeAfterDelay(float delay)
@@ -92,6 +104,8 @@ public class TurnManager : MonoBehaviour
             var yOrder = GetOrder(y);
             return xOrder.CompareTo(yOrder);
         });
+
+        UpdateTurnListUI();
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -282,5 +296,53 @@ public class TurnManager : MonoBehaviour
             }
         }
         return null;
+    }
+
+    private void OpenTurnListPanel()
+    {
+        turnListPanel.SetActive(true);
+        UpdateTurnListUI();
+        buttons.SetActive(false);
+        boostPanelButton.SetActive(false);
+        openButton.gameObject.SetActive(false);
+    }
+
+    private void CloseTurnListPanel()
+    {
+        turnListPanel.SetActive(false);
+        buttons.SetActive(true);
+        boostPanelButton.SetActive(true);
+        openButton.gameObject.SetActive(true);
+    }
+
+    private void UpdateTurnListUI()
+    {
+        for (int i = 0; i < turnListItems.Length; i++)
+        {
+            if (i < turnList.Count)
+            {
+                turnListItems[i].SetActive(true);
+
+                Image img = turnListItems[i].GetComponent<Image>();
+                TextMeshProUGUI txt = turnListItems[i].GetComponentInChildren<TextMeshProUGUI>();
+
+                if (turnList[i] is Player player)
+                {
+                    img.sprite = player.GetComponent<SpriteRenderer>().sprite;
+                    txt.text = player.characterName;
+                }
+                else if (turnList[i] is Enemy enemy)
+                {
+                    img.sprite = enemy.stats.sprite;
+                    txt.text = enemy.stats.charName;
+                }
+            }
+            else
+            {
+                turnListItems[i].SetActive(false);
+            }
+        }
+
+        Debug.Log("tur siralamasi UI'da yapildi");
     }
 }

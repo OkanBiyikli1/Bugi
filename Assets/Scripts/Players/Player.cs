@@ -9,7 +9,7 @@ public class Player : MonoBehaviour
     private int originalHealth; // Geçici can eklendiğinde orijinal canı tutar
     public int damage;
     [SerializeField] private int order;
-    [SerializeField] private string characterName;
+    public string characterName;
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 

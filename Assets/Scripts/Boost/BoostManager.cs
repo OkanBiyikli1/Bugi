@@ -19,6 +19,7 @@ public class BoostManager : MonoBehaviour
     [SerializeField] private Button openPanelButton;
     [SerializeField] private Button closePanelButton;
     [SerializeField] private GameObject buttons;
+    [SerializeField] private Button turnListButton;//Burası değişecek, boostpanel aktif olduğunda setactive false döncek
 
     public TextMeshProUGUI popUpText;
     public GameObject popUp;
@@ -169,6 +170,7 @@ public class BoostManager : MonoBehaviour
         boostPanel.SetActive(true);
         openPanelButton.gameObject.SetActive(false);
         buttons.SetActive(false);
+        turnListButton.gameObject.SetActive(false);
 
         //boostPanel.transform.DOScale(1, 0.5f).SetEase(Ease.InOutQuad);
     }
@@ -178,6 +180,7 @@ public class BoostManager : MonoBehaviour
         boostPanel.SetActive(false);
         openPanelButton.gameObject.SetActive(true);
         buttons.SetActive(true);
+        turnListButton.gameObject.SetActive(true);
 
         //boostPanel.transform.DOScale(0, 0.5f).SetEase(Ease.InOutQuad);
     }
