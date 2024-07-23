@@ -2184,12 +2184,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dadfcdcc6e1345098df1336adf3c4ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 283333159}
-  turnListContainer: {fileID: 2145904085}
-  turnListPanel: {fileID: 1038371426}
-  turnListOpenButton: {fileID: 1642239008}
-  turnListCloseButton: {fileID: 485705503}
-  buttons: {fileID: 1046869894}
 --- !u!1 &466347971
 GameObject:
   m_ObjectHideFlags: 0
@@ -8272,6 +8266,7 @@ MonoBehaviour:
   closeButton: {fileID: 485705503}
   buttons: {fileID: 1046869894}
   boostPanelButton: {fileID: 354965118}
+  generateButton: {fileID: 656658594}
 --- !u!114 &1789108099
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8286,8 +8281,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentLevelIndex: 0
   levels:
-  - {fileID: 11400000, guid: 447130f1f1ba8400698a6eb6bcba4e0f, type: 2}
   - {fileID: 11400000, guid: ef8751c3de8ce479f84441027c2c488f, type: 2}
+  - {fileID: 11400000, guid: 447130f1f1ba8400698a6eb6bcba4e0f, type: 2}
   - {fileID: 11400000, guid: 1d65001ef831b4240a5a25b5d0d53291, type: 2}
   - {fileID: 11400000, guid: 777b0339990e6420a93c232862ca42ec, type: 2}
   - {fileID: 11400000, guid: d57b9ef1d84f64a208abe90305800c49, type: 2}
