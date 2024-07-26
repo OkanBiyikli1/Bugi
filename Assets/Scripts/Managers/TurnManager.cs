@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
+using DG.Tweening; // DoTween kütüphanesini ekliyoruz
 using UnityEngine.UI;
 using TMPro;
 
@@ -24,7 +24,6 @@ public class TurnManager : MonoBehaviour
     [SerializeField] private Button openButton, closeButton; // Turn listesini açmak için kullanılan buton
     [SerializeField] private GameObject buttons;//turn list aktif edildiğinde kapatılacak itemler
     [SerializeField] private GameObject boostPanelButton;//Turn list açıldığında kapatılacak diğer button BU KISMI İLERDE DEĞİŞİCEZ
-    [SerializeField] private Button generateButton;
 
     private void Awake()
     {
@@ -106,7 +105,7 @@ public class TurnManager : MonoBehaviour
             return xOrder.CompareTo(yOrder);
         });
 
-        //UpdateTurnListUI();
+        UpdateTurnListUI();
     }
 
     private int GetOrder(MonoBehaviour character)
@@ -133,16 +132,12 @@ public class TurnManager : MonoBehaviour
                     //RemoveAllCharactersFromList();
                     turnList.Clear();
                     LevelManager.instance.NextLevel();
-                    //BURAYA BUTTONLARI AKTİF EDEN FONKSİYONU KOYACAĞIZ
-                    ActivateButtons();
                     Debug.Log("durdum ve level geçtim");
                     yield break;
                 }
 
                 ActivateIconForCurrent();
                 Debug.Log("Durdurdum");
-                //BURAYA BUTTONLARI AKTİF EDEN FONKSİYONU KOYACAĞIZ
-                ActivateButtons();
                 yield break;
             }
             else if(LevelManager.instance.enemiesCount == 0)
@@ -151,14 +146,10 @@ public class TurnManager : MonoBehaviour
                 turnList.Clear();
                 LevelManager.instance.NextLevel();
                 GameManager.Instance.ClearOrderList();
-                //BURAYA BUTTONLARI AKTİF EDEN FONKSİYONU KOYACAĞIZ
-                ActivateButtons();
                 Debug.Log("asfasmasafaz 2 2 2 2 ");
                 yield break;
             }
 
-            //BURAYA BUTTONLARI DEAKTİF EDEN FONKSİYONU KOYACAĞIZ
-            DeactivateButtons();
 
             var character = turnList[currentTurnIndex];
 
@@ -219,6 +210,8 @@ public class TurnManager : MonoBehaviour
 
             GameManager.Instance.RemoveFirstCommandFromList();
             yield return new WaitForSeconds(.5f);
+            // GameManager.Instance.RemoveFirstCommandFromList();
+            // yield return new WaitForSeconds(1f);
         }
     }
 
@@ -349,35 +342,7 @@ public class TurnManager : MonoBehaviour
                 turnListItems[i].SetActive(false);
             }
         }
-    }
 
-        // Butonları deaktif eden fonksiyon
-    private void DeactivateButtons()
-    {
-        openButton.interactable = false;
-        closeButton.interactable = false;
-        generateButton.interactable = false;
-
-        foreach (Button button in buttons.GetComponentsInChildren<Button>())
-        {
-            button.interactable = false;
-        }
-
-        boostPanelButton.GetComponent<Button>().interactable = false;
-    }
-
-    // Butonları aktif eden fonksiyon
-    private void ActivateButtons()
-    {
-        openButton.interactable = true;
-        closeButton.interactable = true;
-        generateButton.interactable = true;
-
-        foreach (Button button in buttons.GetComponentsInChildren<Button>())
-        {
-            button.interactable = true;
-        }
-
-        boostPanelButton.GetComponent<Button>().interactable = true;
+        Debug.Log("tur siralamasi UI'da yapildi");
     }
 }
