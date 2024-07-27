@@ -6,11 +6,10 @@ public class Player : MonoBehaviour
 {
     public int maxHealth;
     public int currentHealth;
-    private int originalHealth; // Geçici can eklendiğinde orijinal canı tutar
     public int damage;
     [SerializeField] private int order;
     public string characterName;
-    public PlayerAttackType playerType;
+    public PlayerAttackType playerAttackType;
     public PlayerDefenceType playerDefenceType;
 
     public GameObject[] hearts; // Parent objeleri temsil eder
@@ -20,7 +19,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         currentHealth = maxHealth;
-        originalHealth = currentHealth; // Orijinal canı başlangıçta currentHealth olarak ayarla
+        //originalHealth = currentHealth; // Orijinal canı başlangıçta currentHealth olarak ayarla
         UpdateHeartsArray(); // maxHealth ile hearts dizisini eşleştir
         UpdateHeartsUI(); // currentHealth ile child objelerini eşleştir
     }
@@ -43,12 +42,12 @@ public class Player : MonoBehaviour
         {
             case "Slice":
                 Debug.Log(characterName + " is slicing " + damage + " damage.");
-                playerType = PlayerAttackType.Slice;
+                playerAttackType = PlayerAttackType.Slice;
                 Attack();
                 break;
             case "Smash":
                 Debug.Log(characterName + " is smashing " + damage + " damage.");
-                playerType = PlayerAttackType.Smash;
+                playerAttackType = PlayerAttackType.Smash;
                 Attack();
                 break;
             case "Block":
@@ -81,12 +80,23 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-
-        // Orijinal canın altına düşme durumu kontrol edilir
-        if (currentHealth < originalHealth)
+        // Temporary Health Boostları kontrol et ve kaldır
+        for (int i = BoostManager.instance.activeTemporaryBoosts.Count - 1; i >= 0 && damage > 0; i--)
         {
-            currentHealth = originalHealth;
+            var boost = BoostManager.instance.activeTemporaryBoosts[i];
+            if (boost.boostType == BoostType.TemporaryHealth)
+            {
+                // Temporary Health Boost kaldır ve canı düşür
+                BoostManager.instance.activeTemporaryBoosts.RemoveAt(i);
+                currentHealth -= 1; // Boost kaldırıldığında currentHealth 1 azalır
+                damage--;
+            }
+        }
+
+        // Eğer hasar kaldıysa, currentHealth'ten düş
+        if (damage > 0)
+        {
+            currentHealth -= damage;
         }
 
         playerAnim.SetBool("takeHit", true);
@@ -98,6 +108,7 @@ public class Player : MonoBehaviour
             Die();
         }
     }
+
 
     private void Die()
     {
@@ -114,7 +125,7 @@ public class Player : MonoBehaviour
             {
                 if (target.stats.defenceType == DefenceType.SliceDef)
                 {
-                    switch (playerType)
+                    switch (playerAttackType)
                     {
                         case PlayerAttackType.Slice:
                             playerAnim.SetBool("sliceAttack", true);
@@ -129,7 +140,7 @@ public class Player : MonoBehaviour
                 }
                 else if (target.stats.defenceType == DefenceType.SmashDef)
                 {
-                    switch (playerType)
+                    switch (playerAttackType)
                     {
                         case PlayerAttackType.Slice:
                             target.TakeDamage(damage);
@@ -160,7 +171,7 @@ public class Player : MonoBehaviour
     public void ResetDefensiveStates()
     {
         playerDefenceType = PlayerDefenceType.None;
-        playerType = PlayerAttackType.None;
+        playerAttackType = PlayerAttackType.None;
     }
 
     public void Heal(int amount)
@@ -199,7 +210,6 @@ public class Player : MonoBehaviour
 
     public void AddTemporaryHealth(int amount)
     {
-        originalHealth = currentHealth; // Geçici can eklenmeden önce orijinal canı kaydet
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth; // maxHealth'i aşmamalı
         UpdateHeartsUI();
@@ -208,10 +218,6 @@ public class Player : MonoBehaviour
     public void RemoveTemporaryHealth(int amount)
     {
         currentHealth -= amount;
-        if (currentHealth < originalHealth)
-        {
-            currentHealth = originalHealth; // Eğer currentHealth orijinal canın altına düşerse, orijinal cana ayarla
-        }
         UpdateHeartsUI();
     }
 }

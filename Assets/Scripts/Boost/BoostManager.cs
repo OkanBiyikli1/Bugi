@@ -12,7 +12,7 @@ public class BoostManager : MonoBehaviour
     [SerializeField] private List<BoostData> boostDataList; // Boost verilerini tutan liste
     [SerializeField] private List<Button> boostButtons; // UI buttonlarını tutan liste
 
-    [SerializeField] private List<BoostData> activeTemporaryBoosts = new List<BoostData>();
+    public List<BoostData> activeTemporaryBoosts = new List<BoostData>();
 
     [Header("UI Stuff")]
     [SerializeField] private GameObject boostPanel;
@@ -166,6 +166,7 @@ public class BoostManager : MonoBehaviour
             }
         }
         activeTemporaryBoosts.Clear();
+        //Debug.LogWarning("Tüm geçiçi boostlar temizlendi");
     }
 
     private void ActivatePanel()
