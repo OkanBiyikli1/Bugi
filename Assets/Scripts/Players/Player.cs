@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     public PlayerAttackType playerType;
     public PlayerDefenceType playerDefenceType;
 
-    [SerializeField] public GameObject[] hearts; // Parent objeleri temsil eder
+    public GameObject[] hearts; // Parent objeleri temsil eder
 
     public Animator playerAnim;
 

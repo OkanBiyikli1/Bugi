@@ -19,7 +19,7 @@ public class BoostManager : MonoBehaviour
     [SerializeField] private Button openPanelButton;
     [SerializeField] private Button closePanelButton;
     [SerializeField] private GameObject buttons;
-    [SerializeField] private Button turnListButton;//Burası değişecek, boostpanel aktif olduğunda setactive false döncek
+    [SerializeField] private Button turnListButton; // Boost paneli aktif olduğunda setactive false olacak
 
     public TextMeshProUGUI popUpText;
     public GameObject popUp;
@@ -87,7 +87,8 @@ public class BoostManager : MonoBehaviour
                     player.currentHealth += boost.amount;
                     player.UpdateHeartsUI();
                     boostText = "+" + boost.amount + " Health Up";
-                }else
+                }
+                else
                 {
                     boostText = "Max Health reached";
                 }
@@ -98,7 +99,8 @@ public class BoostManager : MonoBehaviour
                     player.AddTemporaryHealth(boost.amount);
                     activeTemporaryBoosts.Add(boost);
                     boostText = "+" + boost.amount + " Temporary Health";
-                }else
+                }
+                else
                 {
                     boostText = "Max Health reached";
                 }
@@ -119,7 +121,8 @@ public class BoostManager : MonoBehaviour
                     player.UpdateHeartsArray(); // maxHealth arttığında hearts dizisini güncelle
                     player.UpdateHeartsUI(); // maxHealth arttığında currentHealth'i de güncelle
                     boostText = "+" + boost.amount + " Max Health";
-                }else
+                }
+                else
                 {
                     boostText = "Max Health reached";
                 }
@@ -171,8 +174,6 @@ public class BoostManager : MonoBehaviour
         openPanelButton.gameObject.SetActive(false);
         buttons.SetActive(false);
         turnListButton.gameObject.SetActive(false);
-
-        //boostPanel.transform.DOScale(1, 0.5f).SetEase(Ease.InOutQuad);
     }
 
     private void ClosePanel()
@@ -181,7 +182,5 @@ public class BoostManager : MonoBehaviour
         openPanelButton.gameObject.SetActive(true);
         buttons.SetActive(true);
         turnListButton.gameObject.SetActive(true);
-
-        //boostPanel.transform.DOScale(0, 0.5f).SetEase(Ease.InOutQuad);
     }
 }
