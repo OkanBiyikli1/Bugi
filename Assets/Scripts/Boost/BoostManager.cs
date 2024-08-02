@@ -99,6 +99,7 @@ public class BoostManager : MonoBehaviour
                     player.AddTemporaryHealth(boost.amount);
                     activeTemporaryBoosts.Add(boost);
                     boostText = "+" + boost.amount + " Temporary Health";
+                    SaveBoosts(); // Geçici boost'ları kaydet
                 }
                 else
                 {
@@ -106,9 +107,11 @@ public class BoostManager : MonoBehaviour
                 }
                 break;
             case BoostType.TemporaryDamage:
-                player.damage += boost.amount;
                 activeTemporaryBoosts.Add(boost);
+                //player.AddTemporaryDamage(boost.amount);
+                player.damage += boost.amount;
                 boostText = "+" + boost.amount + " Temporary Damage";
+                SaveBoosts(); // Geçici boost'ları kaydet
                 break;
             case BoostType.PermanentDamage:
                 player.damage += boost.amount;
@@ -137,6 +140,8 @@ public class BoostManager : MonoBehaviour
         {
             ShowPopUp(boostText);
         }
+
+        player.SavePlayerData(); // Can ve hasar verilerini kaydet
     }
 
     void ShowPopUp(string text)
@@ -162,11 +167,38 @@ public class BoostManager : MonoBehaviour
                     break;
                 case BoostType.TemporaryDamage:
                     player.damage -= boost.amount;
+                    Debug.LogWarning("temporary damage boost removed: " + boost.amount);
                     break;
             }
         }
         activeTemporaryBoosts.Clear();
-        //Debug.LogWarning("Tüm geçiçi boostlar temizlendi");
+        SaveBoosts(); // Geçici boost'ları kaydet
+        player.SavePlayerData(); // Can ve hasar verilerini kaydet
+    }
+
+    public void SaveBoosts()
+    {
+        PlayerPrefs.SetInt("BoostCount", activeTemporaryBoosts.Count);
+        for (int i = 0; i < activeTemporaryBoosts.Count; i++)
+        {
+            PlayerPrefs.SetString($"Boost_{i}_Name", activeTemporaryBoosts[i].name);
+        }
+        PlayerPrefs.Save(); // Verileri anında kaydet
+    }
+
+    public void LoadBoosts()
+    {
+        int boostCount = PlayerPrefs.GetInt("BoostCount", 0);
+        activeTemporaryBoosts.Clear();
+        for (int i = 0; i < boostCount; i++)
+        {
+            string boostName = PlayerPrefs.GetString($"Boost_{i}_Name");
+            BoostData boost = boostDataList.Find(b => b.name == boostName);
+            if (boost != null)
+            {
+                activeTemporaryBoosts.Add(boost);
+            }
+        }
     }
 
     private void ActivatePanel()

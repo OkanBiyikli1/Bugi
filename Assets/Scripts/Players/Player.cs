@@ -18,8 +18,18 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        currentHealth = maxHealth;
-        //originalHealth = currentHealth; // Orijinal canı başlangıçta currentHealth olarak ayarla
+        // Load player data first to set initial values
+        LoadPlayerData();
+
+        // Load boosts and apply their effects
+        BoostManager.instance.LoadBoosts();
+
+        // Ensure currentHealth is correctly initialized if not loaded
+        if (currentHealth == 0)
+        {
+            currentHealth = maxHealth;
+        }
+
         UpdateHeartsArray(); // maxHealth ile hearts dizisini eşleştir
         UpdateHeartsUI(); // currentHealth ile child objelerini eşleştir
     }
@@ -90,6 +100,7 @@ public class Player : MonoBehaviour
                 BoostManager.instance.activeTemporaryBoosts.RemoveAt(i);
                 currentHealth -= 1; // Boost kaldırıldığında currentHealth 1 azalır
                 damage--;
+                BoostManager.instance.SaveBoosts(); // Boostları kaydet
             }
         }
 
@@ -103,12 +114,21 @@ public class Player : MonoBehaviour
         if (currentHealth < 0) currentHealth = 0;
         Debug.Log(characterName + " took " + damage + " damage. Health now: " + currentHealth);
         UpdateHeartsUI();
+        SavePlayerData(); // Can verisini kaydet
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+        if (currentHealth > maxHealth) currentHealth = maxHealth;
+        Debug.Log(characterName + " healed by " + amount + ". Health now: " + currentHealth);
+        UpdateHeartsUI();
+        SavePlayerData(); // Can verisini kaydet
+    }
 
     private void Die()
     {
@@ -174,14 +194,6 @@ public class Player : MonoBehaviour
         playerAttackType = PlayerAttackType.None;
     }
 
-    public void Heal(int amount)
-    {
-        currentHealth += amount;
-        if (currentHealth > maxHealth) currentHealth = maxHealth;
-        Debug.Log(characterName + " healed by " + amount + ". Health now: " + currentHealth);
-        UpdateHeartsUI();
-    }
-
     public void UpdateHeartsUI()
     {
         for (int i = 0; i < hearts.Length; i++)
@@ -208,16 +220,37 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void SavePlayerData()
+    {
+        PlayerPrefs.SetInt("PlayerCurrentHealth", currentHealth);
+        PlayerPrefs.SetInt("PlayerDamage", damage);
+        PlayerPrefs.Save(); // Verileri anında kaydet
+
+        Debug.Log("Player data saved. Health: " + currentHealth + ", Damage: " + damage);
+    }
+
+    void LoadPlayerData()
+    {
+        // Can ve hasar değerlerini yükle
+        currentHealth = PlayerPrefs.GetInt("PlayerCurrentHealth", maxHealth);
+        damage = PlayerPrefs.GetInt("PlayerDamage", damage);
+        UpdateHeartsUI(); // UI'yi güncelle
+
+        Debug.Log("Player data loaded. Health: " + currentHealth + ", Damage: " + damage);
+    }
+
     public void AddTemporaryHealth(int amount)
     {
         currentHealth += amount;
         if (currentHealth > maxHealth) currentHealth = maxHealth; // maxHealth'i aşmamalı
         UpdateHeartsUI();
+        //SavePlayerData(); // Can verisini kaydet
     }
 
     public void RemoveTemporaryHealth(int amount)
     {
         currentHealth -= amount;
         UpdateHeartsUI();
+        //SavePlayerData(); // Can verisini kaydet
     }
 }
